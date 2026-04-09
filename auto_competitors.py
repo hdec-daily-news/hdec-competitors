@@ -350,36 +350,79 @@ def generate_html(company_articles):
     week_ago = (now - timedelta(days=7)).strftime("%m.%d")
     period = f"{week_ago} ~ {now.strftime('%m.%d')}"
 
-    # 회사별 섹션 HTML
+    TAG_CLASS = {
+        "삼성물산": "tag-samsung",
+        "삼성E&A": "tag-sea",
+        "대우건설": "tag-daewoo",
+        "GS건설": "tag-gs",
+        "DL이앤씨": "tag-dl",
+    }
+    DATA_KEY = {
+        "삼성물산": "삼성물산",
+        "삼성E&A": "삼성EA",
+        "대우건설": "대우건설",
+        "GS건설": "GS건설",
+        "DL이앤씨": "DL이앤씨",
+    }
+
+    # 회사별 카드 HTML
     company_sections = ""
     total_count = 0
 
     for company_name, config in COMPANIES.items():
         arts = company_articles.get(company_name, [])
         total_count += len(arts)
+        tag_cls = TAG_CLASS.get(company_name, "tag-samsung")
+        data_key = DATA_KEY.get(company_name, company_name)
 
-        # 기사 리스트 생성
         if not arts:
-            articles_html = '<div class="no-news">해당 기간 주요 동향 없음</div>'
+            cards_html = '<div class="no-news">해당 기간 주요 동향 없음</div>'
         else:
-            articles_html = ""
+            cards_html = ""
             for art in arts:
                 source = get_source(art["link"])
-                articles_html += f"""
-                <div class="news-item">
-                    <a href="{escape(art['link'])}" target="_blank" class="news-title">{escape(art['title'])}</a>
-                    <span class="news-meta">{source} · {art['date']}</span>
-                </div>"""
+                cards_html += f"""
+            <article class="card">
+                <div class="card-inner">
+                    <div class="card-tags"><span class="tag {tag_cls}">{escape(company_name)}</span></div>
+                    <h2 class="card-title">
+                        <a href="{escape(art['link'])}" target="_blank">{escape(art['title'])}</a>
+                    </h2>
+                    <div class="card-footer">
+                        <span class="card-source">{source} · {art['date']}</span>
+                        <a class="card-link" href="{escape(art['link'])}" target="_blank">
+                            기사 원문
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </article>"""
 
         company_sections += f"""
-        <div class="company-block">
-            <div class="company-label" style="border-left-color:{config['color']}">
-                <span class="company-name">{company_name}</span>
-                <span class="company-count">{len(arts)}건</span>
-            </div>
-            <div class="news-list">{articles_html}
-            </div>
+        <div class="company-section visible" data-company="{data_key}">
+            <div class="section-divider"><span>{escape(company_name)}</span><span class="section-count">{len(arts)}건</span></div>
+{cards_html}
         </div>"""
+
+    # 탭 HTML
+    tabs_html = f'<div class="tab active" data-company="all" onclick="filterByCompany(\'all\')">전체 <span class="tab-count">{total_count}</span></div>\n'
+    for company_name, config in COMPANIES.items():
+        count = len(company_articles.get(company_name, []))
+        data_key = DATA_KEY.get(company_name, company_name)
+        tabs_html += f'            <div class="tab" data-company="{data_key}" onclick="filterByCompany(\'{data_key}\')">{escape(company_name)} <span class="tab-count">{count}</span></div>\n'
+
+    # 스탯칩 HTML
+    stats_html = f"""            <div class="stat-chip" data-company="all" onclick="filterByCompany('all')">
+                <div class="stat-company">전체</div>
+                <div class="stat-num" style="color:#15ad60">{total_count}</div>
+            </div>\n"""
+    for company_name, config in COMPANIES.items():
+        count = len(company_articles.get(company_name, []))
+        data_key = DATA_KEY.get(company_name, company_name)
+        stats_html += f"""            <div class="stat-chip" data-company="{data_key}" onclick="filterByCompany('{data_key}')">
+                <div class="stat-company">{escape(company_name)}</div>
+                <div class="stat-num" style="color:{config['color']}">{count}</div>
+            </div>\n"""
 
     html = f"""<!DOCTYPE html>
 <html lang="ko">
@@ -390,101 +433,145 @@ def generate_html(company_articles):
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap');
         * {{ margin: 0; padding: 0; box-sizing: border-box; }}
-        body {{ font-family: 'Noto Sans KR', sans-serif; background: #f0f2f5; color: #222; }}
+        body {{ font-family: 'Noto Sans KR', sans-serif; background: #f5f5f5; color: #222; min-height: 100vh; }}
 
-        /* 보고서 용지 */
-        .report {{ max-width: 900px; margin: 24px auto; background: #fff; box-shadow: 0 1px 8px rgba(0,0,0,0.08); }}
+        .header {{ background: #ffffff; padding: 28px 0; border-bottom: 3px solid #15ad60; }}
+        .header-content {{ max-width: 960px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; }}
+        .header-left {{ display: flex; align-items: center; gap: 16px; }}
+        .header-divider {{ width: 1px; height: 32px; background: #ddd; }}
+        .header-title h1 {{ font-size: 22px; font-weight: 800; color: #1a1a1a; letter-spacing: 1px; }}
+        .header-subtitle {{ font-size: 11px; color: #999; margin-top: 2px; }}
+        .header-right {{ display: flex; flex-direction: column; align-items: flex-end; }}
+        .header-date {{ font-size: 14px; color: #555; font-weight: 500; }}
+        .header-period {{ font-size: 11px; color: #aaa; margin-top: 2px; }}
 
-        /* 헤더 */
-        .report-header {{ padding: 32px 40px 24px; border-bottom: 3px solid #1a1a1a; }}
-        .report-header h1 {{ font-size: 26px; font-weight: 800; color: #1a1a1a; letter-spacing: 2px; }}
-        .report-meta {{ display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }}
-        .report-period {{ font-size: 14px; color: #666; font-weight: 500; }}
-        .report-date {{ font-size: 13px; color: #999; }}
+        .container {{ max-width: 960px; margin: 0 auto; padding: 28px 24px 60px; }}
 
-        /* 요약 바 */
-        .summary {{ display: flex; gap: 0; padding: 0 40px; border-bottom: 1px solid #e8e8e8; }}
-        .summary-item {{ flex: 1; padding: 16px 0; text-align: center; border-right: 1px solid #e8e8e8; }}
-        .summary-item:last-child {{ border-right: none; }}
-        .summary-company {{ font-size: 13px; font-weight: 700; color: #333; }}
-        .summary-num {{ font-size: 22px; font-weight: 800; margin-top: 4px; }}
+        .stats-bar {{ display: flex; gap: 12px; margin-bottom: 24px; }}
+        .stat-chip {{ flex: 1; background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px; text-align: center; transition: all 0.2s ease; cursor: pointer; }}
+        .stat-chip:hover {{ border-color: #15ad60; box-shadow: 0 2px 12px rgba(21, 173, 96, 0.08); }}
+        .stat-chip.active {{ border-color: #15ad60; box-shadow: 0 2px 12px rgba(21, 173, 96, 0.12); }}
+        .stat-company {{ font-size: 12px; font-weight: 700; color: #555; }}
+        .stat-num {{ font-size: 24px; font-weight: 800; margin-top: 4px; }}
 
-        /* 회사별 블록 */
-        .report-body {{ padding: 24px 40px 32px; }}
+        .tabs {{ display: flex; gap: 0; margin-bottom: 24px; border-bottom: 2px solid #e8e8e8; background: #fff; border-radius: 8px 8px 0 0; overflow-x: auto; }}
+        .tab {{ padding: 14px 20px; font-size: 13px; font-weight: 600; color: #888; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s ease; white-space: nowrap; text-align: center; flex: 1; }}
+        .tab:hover {{ color: #333; background: #fafafa; }}
+        .tab.active {{ color: #15ad60; border-bottom-color: #15ad60; background: #fff; }}
+        .tab .tab-count {{ display: inline-block; background: #f0f0f0; color: #999; font-size: 11px; font-weight: 700; padding: 1px 6px; border-radius: 10px; margin-left: 4px; }}
+        .tab.active .tab-count {{ background: #e8f8ef; color: #15ad60; }}
 
-        .company-block {{ margin-bottom: 24px; }}
-        .company-block:last-child {{ margin-bottom: 0; }}
+        .legend {{ display: flex; gap: 14px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }}
+        .legend-item {{ display: flex; align-items: center; gap: 5px; font-size: 12px; color: #666; }}
+        .legend-dot {{ width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }}
+        .legend-criteria {{ margin-left: auto; font-size: 11px; color: #999; white-space: nowrap; }}
 
-        .company-label {{ display: flex; align-items: center; gap: 10px; padding: 8px 0 8px 14px; border-left: 4px solid #333; margin-bottom: 8px; }}
-        .company-name {{ font-size: 16px; font-weight: 700; color: #1a1a1a; }}
-        .company-count {{ font-size: 12px; color: #999; }}
+        .section-divider {{ display: flex; align-items: center; gap: 10px; margin: 28px 0 16px; font-size: 13px; font-weight: 700; color: #15ad60; letter-spacing: 0.5px; }}
+        .section-divider::after {{ content: ''; flex: 1; height: 1px; background: #ddd; }}
+        .section-count {{ font-size: 11px; font-weight: 400; color: #999; margin-left: auto; white-space: nowrap; }}
 
-        .news-list {{ padding-left: 18px; }}
+        .card {{ background: #ffffff; border: 1px solid #e8e8e8; border-radius: 8px; margin-bottom: 12px; overflow: hidden; transition: all 0.2s ease; }}
+        .card:hover {{ border-color: #15ad60; box-shadow: 0 2px 12px rgba(21, 173, 96, 0.08); }}
+        .card-inner {{ padding: 20px 24px; }}
+        .card-tags {{ display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }}
+        .tag {{ font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 3px; letter-spacing: 0.2px; }}
+        .tag-samsung {{ background: #e8eaf6; color: #1428a0; }}
+        .tag-sea {{ background: #e8eaf6; color: #1428a0; }}
+        .tag-daewoo {{ background: #e3f2fd; color: #003da5; }}
+        .tag-gs {{ background: #fdecea; color: #ed1c24; }}
+        .tag-dl {{ background: #fff3e0; color: #e95c0c; }}
+        .card-title {{ font-size: 16px; font-weight: 600; color: #1a1a1a; line-height: 1.6; margin-bottom: 8px; }}
+        .card-title a {{ color: inherit; text-decoration: none; transition: color 0.2s; }}
+        .card-title a:hover {{ color: #15ad60; }}
+        .card-footer {{ display: flex; align-items: center; justify-content: space-between; }}
+        .card-source {{ font-size: 12px; color: #aaa; }}
+        .card-link {{ display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: #15ad60; text-decoration: none; font-weight: 600; }}
+        .card-link:hover {{ color: #0d8c4d; }}
+        .card-link svg {{ width: 13px; height: 13px; }}
 
-        .news-item {{ padding: 6px 0; display: flex; flex-direction: column; gap: 2px; }}
-        .news-item + .news-item {{ border-top: 1px solid #f5f5f5; }}
+        .no-news {{ font-size: 13px; color: #bbb; padding: 16px 0; font-style: italic; text-align: center; }}
 
-        .news-title {{ font-size: 14px; font-weight: 500; color: #1a1a1a; text-decoration: none; line-height: 1.6; }}
-        .news-title:hover {{ color: #2c3e50; text-decoration: underline; }}
+        .company-section {{ display: none; }}
+        .company-section.visible {{ display: block; }}
 
-        .news-meta {{ font-size: 11px; color: #aaa; }}
+        .footer {{ text-align: center; padding: 28px 24px; border-top: 1px solid #e0e0e0; font-size: 11px; color: #aaa; background: #fff; }}
 
-        .no-news {{ font-size: 13px; color: #bbb; padding: 8px 0; font-style: italic; }}
-
-        /* 푸터 */
-        .report-footer {{ padding: 16px 40px; border-top: 1px solid #e8e8e8; text-align: center; font-size: 11px; color: #bbb; }}
-
-        /* 인쇄 최적화 */
         @media print {{
             body {{ background: #fff; }}
-            .report {{ box-shadow: none; margin: 0; }}
-            .report-header {{ padding: 20px 30px 16px; }}
-            .report-body {{ padding: 16px 30px 20px; }}
-            .summary {{ padding: 0 30px; }}
-            .news-title {{ color: #000 !important; }}
-            .news-title:hover {{ text-decoration: none; }}
+            .tabs, .stats-bar {{ display: none; }}
+            .company-section {{ display: block !important; }}
+            .card {{ break-inside: avoid; box-shadow: none; border-color: #ddd; }}
+            .card:hover {{ border-color: #ddd; box-shadow: none; }}
         }}
 
         @media (max-width: 640px) {{
-            .report {{ margin: 0; }}
-            .report-header, .report-body {{ padding-left: 20px; padding-right: 20px; }}
-            .summary {{ padding: 0 20px; flex-wrap: wrap; }}
-            .summary-item {{ flex-basis: 33%; }}
-            .report-header h1 {{ font-size: 20px; }}
+            .header-content {{ flex-direction: column; align-items: flex-start; gap: 12px; }}
+            .header-title h1 {{ font-size: 20px; }}
+            .stats-bar {{ flex-wrap: wrap; gap: 8px; }}
+            .stat-chip {{ flex-basis: calc(50% - 4px); flex-grow: 0; }}
+            .tab {{ padding: 12px 14px; font-size: 12px; }}
+            .card-inner {{ padding: 16px; }}
+            .card-title {{ font-size: 14px; }}
         }}
     </style>
 </head>
 <body>
-    <div class="report">
-        <div class="report-header">
-            <h1>대형사 동향</h1>
-            <div class="report-meta">
-                <span class="report-period">{period} (주간)</span>
-                <span class="report-date">작성일 {today}</span>
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <div class="header-title">
+                    <h1>COMPETITORS WATCH</h1>
+                    <div class="header-subtitle">대형 건설사 사업동향 모니터링</div>
+                </div>
+            </div>
+            <div class="header-right">
+                <span class="header-date">{today}</span>
+                <span class="header-period">{period} (주간)</span>
             </div>
         </div>
+    </header>
 
-        <div class="summary">
-"""
+    <main class="container">
+        <div class="stats-bar">
+{stats_html}        </div>
 
-    for company_name, config in COMPANIES.items():
-        count = len(company_articles.get(company_name, []))
-        html += f"""            <div class="summary-item">
-                <div class="summary-company">{company_name}</div>
-                <div class="summary-num" style="color:{config['color']}">{count}</div>
-            </div>
-"""
+        <div class="tabs">
+            {tabs_html}        </div>
 
-    html += f"""        </div>
+        <div class="legend">
+            <div class="legend-item"><div class="legend-dot" style="background:#1428a0"></div>삼성</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#003da5"></div>대우건설</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#ed1c24"></div>GS건설</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#e95c0c"></div>DL이앤씨</div>
+            <span class="legend-criteria">네이버 뉴스 API 기반 · 사업동향 스코어링 · 회사별 상위 5건 자동 선정</span>
+        </div>
 
-        <div class="report-body">
 {company_sections}
-        </div>
 
-        <div class="report-footer">
-            대형사 동향 · 네이버 뉴스 API 기반 사업동향 자동 수집 · {today_short}
-        </div>
-    </div>
+    </main>
+
+    <footer class="footer">
+        <p>COMPETITORS WATCH · 네이버 뉴스 API 기반 경쟁사 사업동향 자동 수집 · {today_short}</p>
+    </footer>
+
+    <script>
+    function filterByCompany(company) {{
+        document.querySelectorAll('.tab').forEach(t => {{
+            t.classList.toggle('active', t.dataset.company === company);
+        }});
+        document.querySelectorAll('.stat-chip').forEach(c => {{
+            c.classList.toggle('active', c.dataset.company === company);
+        }});
+        document.querySelectorAll('.company-section').forEach(s => {{
+            if (company === 'all') {{
+                s.classList.add('visible');
+            }} else {{
+                s.classList.toggle('visible', s.dataset.company === company);
+            }}
+        }});
+    }}
+    filterByCompany('all');
+    </script>
 </body>
 </html>"""
 
