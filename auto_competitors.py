@@ -905,7 +905,17 @@ def generate_html(company_articles):
             }}
         }});
     }}
-    filterByCompany('all');
+    // 최초 진입 시 URL hash로 회사 자동 필터 (PPTX 보고서 링크에서 진입 가능)
+    // 예: https://hdec-daily-news.github.io/hdec-competitors/#대우건설
+    function applyHashFilter() {{
+        let h = decodeURIComponent((location.hash || '').replace(/^#/, '')).trim();
+        // 삼성E&A는 data-company가 '삼성EA' 이므로 매핑
+        if (h === '삼성E&A' || h === '삼성EA') h = '삼성EA';
+        const valid = ['all','삼성물산','삼성EA','대우건설','GS건설','DL이앤씨'];
+        filterByCompany(valid.includes(h) ? h : 'all');
+    }}
+    applyHashFilter();
+    window.addEventListener('hashchange', applyHashFilter);
     </script>
 </body>
 </html>"""
