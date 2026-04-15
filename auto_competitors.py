@@ -656,271 +656,141 @@ def escape(text):
 
 
 def generate_html(company_articles):
+    """대형사 동향 HTML — oil-naphtha 라이트 테마 공유"""
     now = datetime.now(KST)
-    today = now.strftime("%Y년 %m월 %d일")
-    today_short = now.strftime("%Y.%m.%d")
+    today = now.strftime("%Y년 %m월 %d일 %H:%M")
     week_ago = (now - timedelta(days=7)).strftime("%m.%d")
     period = f"{week_ago} ~ {now.strftime('%m.%d')}"
 
-    TAG_CLASS = {
-        "삼성물산": "tag-samsung",
-        "삼성E&A": "tag-sea",
-        "대우건설": "tag-daewoo",
-        "GS건설": "tag-gs",
-        "DL이앤씨": "tag-dl",
-    }
-    DATA_KEY = {
-        "삼성물산": "삼성물산",
-        "삼성E&A": "삼성EA",
-        "대우건설": "대우건설",
-        "GS건설": "GS건설",
-        "DL이앤씨": "DL이앤씨",
+    COMPANY_ICONS = {
+        "삼성물산": "🏢",
+        "삼성E&A": "⚙️",
+        "대우건설": "🏗️",
+        "GS건설": "🏛️",
+        "DL이앤씨": "🏘️",
     }
 
-    # 회사별 카드 HTML
-    company_sections = ""
-    total_count = 0
+    sections_html_list = []
+    total_count = sum(len(v) for v in company_articles.values())
 
     for company_name, config in COMPANIES.items():
         arts = company_articles.get(company_name, [])
-        total_count += len(arts)
-        tag_cls = TAG_CLASS.get(company_name, "tag-samsung")
-        data_key = DATA_KEY.get(company_name, company_name)
+        icon = COMPANY_ICONS.get(company_name, "🏢")
+        color = config.get("color", "#15ad60")
+        top = arts[:2]
+        rest = arts[2:]
+
+        top_html = ""
+        for a in top:
+            source = get_source(a["link"])
+            d = a["date"][5:].replace("-", ".") if len(a["date"]) >= 10 else a["date"]
+            top_html += f'''
+        <a class="top-card" href="{escape(a["link"])}" target="_blank" rel="noopener">
+          <div class="top-card-source">{escape(source)} · {d}</div>
+          <h3 class="top-card-title">{escape(a["title"])}</h3>
+          <p class="top-card-desc">{escape(a.get("description", "")[:160])}</p>
+          <span class="top-card-more" style="color:{color}">원문 기사 보기 →</span>
+        </a>'''
+
+        rest_html = ""
+        for a in rest:
+            source = get_source(a["link"])
+            d = a["date"][5:].replace("-", ".") if len(a["date"]) >= 10 else a["date"]
+            rest_html += f'''
+          <li class="headline">
+            <a href="{escape(a["link"])}" target="_blank" rel="noopener">
+              <span class="hl-title">{escape(a["title"])}</span>
+              <span class="hl-meta">{escape(source)} · {d}</span>
+            </a>
+          </li>'''
 
         if not arts:
-            cards_html = '<div class="no-news">해당 기간 주요 동향 없음</div>'
+            body = '<div class="empty">해당 기간 주요 동향 없음</div>'
         else:
-            cards_html = ""
-            for art in arts:
-                source = get_source(art["link"])
-                # 카테고리 태그 생성
-                cat_tags = ""
-                primary_cat = art.get("_primary_category", "")
-                primary_cls = art.get("_primary_tag_class", "")
-                if primary_cat and primary_cls:
-                    CAT_LABELS = {
-                        "수주계약": "수주·계약", "입찰경쟁": "입찰",
-                        "정비사업": "정비사업", "착공준공": "착공·준공",
-                        "해외사업": "해외", "에너지인프라": "에너지",
-                        "사업전략": "전략·MOU", "기술개발": "기술",
-                        "조직인사": "조직·인사", "경영실적": "실적",
-                        "리스크": "리스크",
-                    }
-                    cat_label = CAT_LABELS.get(primary_cat, primary_cat)
-                    cat_tags = f'<span class="tag {primary_cls}">{cat_label}</span>'
+            body = ""
+            if top:
+                body += f'<div class="top-cards">{top_html}</div>'
+            if rest:
+                body += f'<ul class="headlines">{rest_html}</ul>'
 
-                cards_html += f"""
-            <article class="card">
-                <div class="card-inner">
-                    <div class="card-tags"><span class="tag {tag_cls}">{escape(company_name)}</span>{cat_tags}</div>
-                    <h2 class="card-title">
-                        <a href="{escape(art['link'])}" target="_blank">{escape(art['title'])}</a>
-                    </h2>
-                    <div class="card-footer">
-                        <span class="card-source">{source} · {art['date']}</span>
-                        <a class="card-link" href="{escape(art['link'])}" target="_blank">
-                            기사 원문
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>"""
+        sections_html_list.append(f'''
+    <section class="section">
+      <div class="section-head">
+        <div class="section-icon">{icon}</div>
+        <div class="section-meta">
+          <h2 class="section-title" style="color:{color}">{escape(company_name)}</h2>
+          <div class="section-count" style="background:{color}">{len(arts)}건</div>
+        </div>
+      </div>
+      {body}
+    </section>''')
 
-        company_sections += f"""
-        <div class="company-section visible" data-company="{data_key}">
-            <div class="section-divider"><span>{escape(company_name)}</span><span class="section-count">{len(arts)}건</span></div>
-{cards_html}
-        </div>"""
+    sections_html = "".join(sections_html_list)
+    company_stats = ""
+    for cn, cfg in COMPANIES.items():
+        cnt = len(company_articles.get(cn, []))
+        label = cn if cn != "삼성E&A" else "삼성 E&A"
+        company_stats += f'''<div class="stat"><span class="stat-num" style="color:{cfg["color"]}">{cnt}</span><span class="stat-lab">{escape(label)}</span></div>'''
 
-    # 탭 HTML
-    tabs_html = f'<div class="tab active" data-company="all" onclick="filterByCompany(\'all\')">전체 <span class="tab-count">{total_count}</span></div>\n'
-    for company_name, config in COMPANIES.items():
-        count = len(company_articles.get(company_name, []))
-        data_key = DATA_KEY.get(company_name, company_name)
-        tabs_html += f'            <div class="tab" data-company="{data_key}" onclick="filterByCompany(\'{data_key}\')">{escape(company_name)} <span class="tab-count">{count}</span></div>\n'
-
-    # 스탯칩 HTML
-    stats_html = f"""            <div class="stat-chip" data-company="all" onclick="filterByCompany('all')">
-                <div class="stat-company">전체</div>
-                <div class="stat-num" style="color:#15ad60">{total_count}</div>
-            </div>\n"""
-    for company_name, config in COMPANIES.items():
-        count = len(company_articles.get(company_name, []))
-        data_key = DATA_KEY.get(company_name, company_name)
-        stats_html += f"""            <div class="stat-chip" data-company="{data_key}" onclick="filterByCompany('{data_key}')">
-                <div class="stat-company">{escape(company_name)}</div>
-                <div class="stat-num" style="color:{config['color']}">{count}</div>
-            </div>\n"""
-
-    html = f"""<!DOCTYPE html>
+    html = f'''<!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>대형사 동향 - {today}</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap');
-        * {{ margin: 0; padding: 0; box-sizing: border-box; }}
-        body {{ font-family: 'Noto Sans KR', sans-serif; background: #f5f5f5; color: #222; min-height: 100vh; }}
-
-        .header {{ background: #ffffff; padding: 28px 0; border-bottom: 3px solid #15ad60; }}
-        .header-content {{ max-width: 960px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; }}
-        .header-left {{ display: flex; align-items: center; gap: 16px; }}
-        .header-divider {{ width: 1px; height: 32px; background: #ddd; }}
-        .header-title h1 {{ font-size: 22px; font-weight: 800; color: #1a1a1a; letter-spacing: 1px; }}
-        .header-subtitle {{ font-size: 11px; color: #999; margin-top: 2px; }}
-        .header-right {{ display: flex; flex-direction: column; align-items: flex-end; }}
-        .header-date {{ font-size: 14px; color: #555; font-weight: 500; }}
-        .header-period {{ font-size: 11px; color: #aaa; margin-top: 2px; }}
-
-        .container {{ max-width: 960px; margin: 0 auto; padding: 28px 24px 60px; }}
-
-        .stats-bar {{ display: flex; gap: 12px; margin-bottom: 24px; }}
-        .stat-chip {{ flex: 1; background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px; text-align: center; transition: all 0.2s ease; cursor: pointer; }}
-        .stat-chip:hover {{ border-color: #15ad60; box-shadow: 0 2px 12px rgba(21, 173, 96, 0.08); }}
-        .stat-chip.active {{ border-color: #15ad60; box-shadow: 0 2px 12px rgba(21, 173, 96, 0.12); }}
-        .stat-company {{ font-size: 12px; font-weight: 700; color: #555; }}
-        .stat-num {{ font-size: 24px; font-weight: 800; margin-top: 4px; }}
-
-        .tabs {{ display: flex; gap: 0; margin-bottom: 24px; border-bottom: 2px solid #e8e8e8; background: #fff; border-radius: 8px 8px 0 0; overflow-x: auto; }}
-        .tab {{ padding: 14px 20px; font-size: 13px; font-weight: 600; color: #888; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s ease; white-space: nowrap; text-align: center; flex: 1; }}
-        .tab:hover {{ color: #333; background: #fafafa; }}
-        .tab.active {{ color: #15ad60; border-bottom-color: #15ad60; background: #fff; }}
-        .tab .tab-count {{ display: inline-block; background: #f0f0f0; color: #999; font-size: 11px; font-weight: 700; padding: 1px 6px; border-radius: 10px; margin-left: 4px; }}
-        .tab.active .tab-count {{ background: #e8f8ef; color: #15ad60; }}
-
-        .legend {{ display: flex; gap: 14px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }}
-        .legend-item {{ display: flex; align-items: center; gap: 5px; font-size: 12px; color: #666; }}
-        .legend-dot {{ width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }}
-        .legend-criteria {{ margin-left: auto; font-size: 11px; color: #999; white-space: nowrap; }}
-
-        .section-divider {{ display: flex; align-items: center; gap: 10px; margin: 28px 0 16px; font-size: 13px; font-weight: 700; color: #15ad60; letter-spacing: 0.5px; }}
-        .section-divider::after {{ content: ''; flex: 1; height: 1px; background: #ddd; }}
-        .section-count {{ font-size: 11px; font-weight: 400; color: #999; margin-left: auto; white-space: nowrap; }}
-
-        .card {{ background: #ffffff; border: 1px solid #e8e8e8; border-radius: 8px; margin-bottom: 12px; overflow: hidden; transition: all 0.2s ease; }}
-        .card:hover {{ border-color: #15ad60; box-shadow: 0 2px 12px rgba(21, 173, 96, 0.08); }}
-        .card-inner {{ padding: 20px 24px; }}
-        .card-tags {{ display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }}
-        .tag {{ font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 3px; letter-spacing: 0.2px; }}
-        .tag-samsung {{ background: #e8eaf6; color: #1428a0; }}
-        .tag-sea {{ background: #e8eaf6; color: #1428a0; }}
-        .tag-daewoo {{ background: #e3f2fd; color: #003da5; }}
-        .tag-gs {{ background: #fdecea; color: #ed1c24; }}
-        .tag-dl {{ background: #fff3e0; color: #e95c0c; }}
-        .tag-compete {{ background: #e3f2fd; color: #1976d2; }}
-        .tag-energy {{ background: #e8f8ef; color: #15ad60; }}
-        .tag-strategy {{ background: #f3e5f5; color: #7b1fa2; }}
-        .tag-tech {{ background: #e0f2f1; color: #00796b; }}
-        .tag-org {{ background: #fff8e1; color: #f57f17; }}
-        .tag-finance {{ background: #fce4ec; color: #c62828; }}
-        .tag-risk {{ background: #fdecea; color: #d32f2f; }}
-        .card-title {{ font-size: 16px; font-weight: 600; color: #1a1a1a; line-height: 1.6; margin-bottom: 8px; }}
-        .card-title a {{ color: inherit; text-decoration: none; transition: color 0.2s; }}
-        .card-title a:hover {{ color: #15ad60; }}
-        .card-footer {{ display: flex; align-items: center; justify-content: space-between; }}
-        .card-source {{ font-size: 12px; color: #aaa; }}
-        .card-link {{ display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: #15ad60; text-decoration: none; font-weight: 600; }}
-        .card-link:hover {{ color: #0d8c4d; }}
-        .card-link svg {{ width: 13px; height: 13px; }}
-
-        .no-news {{ font-size: 13px; color: #bbb; padding: 16px 0; font-style: italic; text-align: center; }}
-
-        .company-section {{ display: none; }}
-        .company-section.visible {{ display: block; }}
-
-        .footer {{ text-align: center; padding: 28px 24px; border-top: 1px solid #e0e0e0; font-size: 11px; color: #aaa; background: #fff; }}
-
-        @media print {{
-            body {{ background: #fff; }}
-            .tabs, .stats-bar {{ display: none; }}
-            .company-section {{ display: block !important; }}
-            .card {{ break-inside: avoid; box-shadow: none; border-color: #ddd; }}
-            .card:hover {{ border-color: #ddd; box-shadow: none; }}
-        }}
-
-        @media (max-width: 640px) {{
-            .header-content {{ flex-direction: column; align-items: flex-start; gap: 12px; }}
-            .header-title h1 {{ font-size: 20px; }}
-            .stats-bar {{ flex-wrap: wrap; gap: 8px; }}
-            .stat-chip {{ flex-basis: calc(50% - 4px); flex-grow: 0; }}
-            .tab {{ padding: 12px 14px; font-size: 12px; }}
-            .card-inner {{ padding: 16px; }}
-            .card-title {{ font-size: 14px; }}
-        }}
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>대형 건설사 동향 Weekly | HDEC Daily News</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header class="header">
-        <div class="header-content">
-            <div class="header-left">
-                <div class="header-title">
-                    <h1>COMPETITORS WATCH</h1>
-                    <div class="header-subtitle">대형 건설사 사업동향 모니터링</div>
-                </div>
-            </div>
-            <div class="header-right">
-                <span class="header-date">{today}</span>
-                <span class="header-period">{period} (주간)</span>
-            </div>
-        </div>
-    </header>
 
-    <main class="container">
-        <div class="stats-bar">
-{stats_html}        </div>
+<div class="bg-wrap"><div class="bg-overlay"></div></div>
 
-        <div class="tabs">
-            {tabs_html}        </div>
+<main class="container">
 
-        <div class="legend">
-            <div class="legend-item"><div class="legend-dot" style="background:#1428a0"></div>삼성</div>
-            <div class="legend-item"><div class="legend-dot" style="background:#003da5"></div>대우건설</div>
-            <div class="legend-item"><div class="legend-dot" style="background:#ed1c24"></div>GS건설</div>
-            <div class="legend-item"><div class="legend-dot" style="background:#e95c0c"></div>DL이앤씨</div>
-            <span class="legend-criteria">네이버 뉴스 API 기반 · 사업동향 스코어링 · 회사별 상위 5건 자동 선정</span>
-        </div>
+  <header class="site-header">
+    <a href="https://hdec-daily-news.github.io/landing/" class="brand">
+      <span class="brand-dot"></span>
+      <span class="brand-name">HDEC Daily News</span>
+    </a>
+    <div class="site-meta">
+      <span>업데이트 {today}</span>
+      <span class="sep">·</span>
+      <span>수집기간 {period}</span>
+    </div>
+  </header>
 
-{company_sections}
+  <section class="hero">
+    <div class="hero-tag">🏢 WEEKLY UPDATE</div>
+    <h1>
+      <span class="hero-sub">주간 업데이트되는</span>
+      <span class="hero-main">대형 건설사 동향</span>
+    </h1>
+    <p class="hero-desc">
+      삼성물산 · 삼성E&amp;A · 대우건설 · GS건설 · DL이앤씨<br>
+      <strong>5개사 사업동향</strong>을 AI로 수집, 주요 경제지·종합지 기사만 선별합니다.
+    </p>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num">{total_count}</span><span class="stat-lab">TOTAL</span></div>
+      {company_stats}
+    </div>
+  </section>
 
-    </main>
+  {sections_html}
 
-    <footer class="footer">
-        <p>COMPETITORS WATCH · 네이버 뉴스 API 기반 경쟁사 사업동향 자동 수집 · {today_short}</p>
-    </footer>
+  <footer class="site-footer">
+    <div>현대건설 글로벌사업부 · 내부 업무용</div>
+    <div class="tech">Powered by Naver News API · GitHub Pages</div>
+  </footer>
 
-    <script>
-    function filterByCompany(company) {{
-        document.querySelectorAll('.tab').forEach(t => {{
-            t.classList.toggle('active', t.dataset.company === company);
-        }});
-        document.querySelectorAll('.stat-chip').forEach(c => {{
-            c.classList.toggle('active', c.dataset.company === company);
-        }});
-        document.querySelectorAll('.company-section').forEach(s => {{
-            if (company === 'all') {{
-                s.classList.add('visible');
-            }} else {{
-                s.classList.toggle('visible', s.dataset.company === company);
-            }}
-        }});
-    }}
-    // 최초 진입 시 URL hash로 회사 자동 필터 (PPTX 보고서 링크에서 진입 가능)
-    // 예: https://hdec-daily-news.github.io/hdec-competitors/#대우건설
-    function applyHashFilter() {{
-        let h = decodeURIComponent((location.hash || '').replace(/^#/, '')).trim();
-        // 삼성E&A는 data-company가 '삼성EA' 이므로 매핑
-        if (h === '삼성E&A' || h === '삼성EA') h = '삼성EA';
-        const valid = ['all','삼성물산','삼성EA','대우건설','GS건설','DL이앤씨'];
-        filterByCompany(valid.includes(h) ? h : 'all');
-    }}
-    applyHashFilter();
-    window.addEventListener('hashchange', applyHashFilter);
-    </script>
+</main>
 </body>
-</html>"""
+</html>'''
 
     return html
+
+
 
 
 # ──────────────────────────────────────
