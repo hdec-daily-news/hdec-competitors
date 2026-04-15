@@ -100,7 +100,7 @@ def collect_news():
     # 자정 기준으로 윈도우를 잡아 같은 날 여러 번 돌려도 결과가 미끄러지지 않게 함.
     # 보고 사이클이 매주 ~1회임을 감안해 7일이 아닌 8일로 약간 여유를 둠 → 한 주차 양 끝이 잘리지 않음.
     today_midnight = datetime.now(KST).replace(hour=0, minute=0, second=0, microsecond=0)
-    cutoff = today_midnight - timedelta(days=8)
+    cutoff = today_midnight - timedelta(days=1)
 
     all_articles = {}
 
@@ -659,8 +659,8 @@ def generate_html(company_articles):
     """대형사 동향 HTML — oil-naphtha 라이트 테마 공유"""
     now = datetime.now(KST)
     today = now.strftime("%Y년 %m월 %d일 %H:%M")
-    week_ago = (now - timedelta(days=7)).strftime("%m.%d")
-    period = f"{week_ago} ~ {now.strftime('%m.%d')}"
+    yesterday = (now - timedelta(days=1)).strftime("%m.%d")
+    period = f"{yesterday} ~ {now.strftime('%m.%d')}"
 
     COMPANY_ICONS = {
         "삼성물산": "🏢",
