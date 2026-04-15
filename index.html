@@ -1,907 +1,441 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>대형사 동향 - 2026년 04월 13일</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap');
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Noto Sans KR', sans-serif; background: #f5f5f5; color: #222; min-height: 100vh; }
-
-        .header { background: #ffffff; padding: 28px 0; border-bottom: 3px solid #15ad60; }
-        .header-content { max-width: 960px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; }
-        .header-left { display: flex; align-items: center; gap: 16px; }
-        .header-divider { width: 1px; height: 32px; background: #ddd; }
-        .header-title h1 { font-size: 22px; font-weight: 800; color: #1a1a1a; letter-spacing: 1px; }
-        .header-subtitle { font-size: 11px; color: #999; margin-top: 2px; }
-        .header-right { display: flex; flex-direction: column; align-items: flex-end; }
-        .header-date { font-size: 14px; color: #555; font-weight: 500; }
-        .header-period { font-size: 11px; color: #aaa; margin-top: 2px; }
-
-        .container { max-width: 960px; margin: 0 auto; padding: 28px 24px 60px; }
-
-        .stats-bar { display: flex; gap: 12px; margin-bottom: 24px; }
-        .stat-chip { flex: 1; background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px; text-align: center; transition: all 0.2s ease; cursor: pointer; }
-        .stat-chip:hover { border-color: #15ad60; box-shadow: 0 2px 12px rgba(21, 173, 96, 0.08); }
-        .stat-chip.active { border-color: #15ad60; box-shadow: 0 2px 12px rgba(21, 173, 96, 0.12); }
-        .stat-company { font-size: 12px; font-weight: 700; color: #555; }
-        .stat-num { font-size: 24px; font-weight: 800; margin-top: 4px; }
-
-        .tabs { display: flex; gap: 0; margin-bottom: 24px; border-bottom: 2px solid #e8e8e8; background: #fff; border-radius: 8px 8px 0 0; overflow-x: auto; }
-        .tab { padding: 14px 20px; font-size: 13px; font-weight: 600; color: #888; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s ease; white-space: nowrap; text-align: center; flex: 1; }
-        .tab:hover { color: #333; background: #fafafa; }
-        .tab.active { color: #15ad60; border-bottom-color: #15ad60; background: #fff; }
-        .tab .tab-count { display: inline-block; background: #f0f0f0; color: #999; font-size: 11px; font-weight: 700; padding: 1px 6px; border-radius: 10px; margin-left: 4px; }
-        .tab.active .tab-count { background: #e8f8ef; color: #15ad60; }
-
-        .legend { display: flex; gap: 14px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
-        .legend-item { display: flex; align-items: center; gap: 5px; font-size: 12px; color: #666; }
-        .legend-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
-        .legend-criteria { margin-left: auto; font-size: 11px; color: #999; white-space: nowrap; }
-
-        .section-divider { display: flex; align-items: center; gap: 10px; margin: 28px 0 16px; font-size: 13px; font-weight: 700; color: #15ad60; letter-spacing: 0.5px; }
-        .section-divider::after { content: ''; flex: 1; height: 1px; background: #ddd; }
-        .section-count { font-size: 11px; font-weight: 400; color: #999; margin-left: auto; white-space: nowrap; }
-
-        .card { background: #ffffff; border: 1px solid #e8e8e8; border-radius: 8px; margin-bottom: 12px; overflow: hidden; transition: all 0.2s ease; }
-        .card:hover { border-color: #15ad60; box-shadow: 0 2px 12px rgba(21, 173, 96, 0.08); }
-        .card-inner { padding: 20px 24px; }
-        .card-tags { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
-        .tag { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 3px; letter-spacing: 0.2px; }
-        .tag-samsung { background: #e8eaf6; color: #1428a0; }
-        .tag-sea { background: #e8eaf6; color: #1428a0; }
-        .tag-daewoo { background: #e3f2fd; color: #003da5; }
-        .tag-gs { background: #fdecea; color: #ed1c24; }
-        .tag-dl { background: #fff3e0; color: #e95c0c; }
-        .tag-compete { background: #e3f2fd; color: #1976d2; }
-        .tag-energy { background: #e8f8ef; color: #15ad60; }
-        .tag-strategy { background: #f3e5f5; color: #7b1fa2; }
-        .tag-tech { background: #e0f2f1; color: #00796b; }
-        .tag-org { background: #fff8e1; color: #f57f17; }
-        .tag-finance { background: #fce4ec; color: #c62828; }
-        .tag-risk { background: #fdecea; color: #d32f2f; }
-        .card-title { font-size: 16px; font-weight: 600; color: #1a1a1a; line-height: 1.6; margin-bottom: 8px; }
-        .card-title a { color: inherit; text-decoration: none; transition: color 0.2s; }
-        .card-title a:hover { color: #15ad60; }
-        .card-footer { display: flex; align-items: center; justify-content: space-between; }
-        .card-source { font-size: 12px; color: #aaa; }
-        .card-link { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: #15ad60; text-decoration: none; font-weight: 600; }
-        .card-link:hover { color: #0d8c4d; }
-        .card-link svg { width: 13px; height: 13px; }
-
-        .no-news { font-size: 13px; color: #bbb; padding: 16px 0; font-style: italic; text-align: center; }
-
-        .company-section { display: none; }
-        .company-section.visible { display: block; }
-
-        .footer { text-align: center; padding: 28px 24px; border-top: 1px solid #e0e0e0; font-size: 11px; color: #aaa; background: #fff; }
-
-        @media print {
-            body { background: #fff; }
-            .tabs, .stats-bar { display: none; }
-            .company-section { display: block !important; }
-            .card { break-inside: avoid; box-shadow: none; border-color: #ddd; }
-            .card:hover { border-color: #ddd; box-shadow: none; }
-        }
-
-        @media (max-width: 640px) {
-            .header-content { flex-direction: column; align-items: flex-start; gap: 12px; }
-            .header-title h1 { font-size: 20px; }
-            .stats-bar { flex-wrap: wrap; gap: 8px; }
-            .stat-chip { flex-basis: calc(50% - 4px); flex-grow: 0; }
-            .tab { padding: 12px 14px; font-size: 12px; }
-            .card-inner { padding: 16px; }
-            .card-title { font-size: 14px; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>대형 건설사 동향 Weekly | HDEC Daily News</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header class="header">
-        <div class="header-content">
-            <div class="header-left">
-                <div class="header-title">
-                    <h1>COMPETITORS WATCH</h1>
-                    <div class="header-subtitle">대형 건설사 사업동향 모니터링</div>
-                </div>
-            </div>
-            <div class="header-right">
-                <span class="header-date">2026년 04월 13일</span>
-                <span class="header-period">04.06 ~ 04.13 (주간)</span>
-            </div>
+
+<div class="bg-wrap"><div class="bg-overlay"></div></div>
+
+<main class="container">
+
+  <header class="site-header">
+    <a href="https://hdec-daily-news.github.io/landing/" class="brand">
+      <span class="brand-dot"></span>
+      <span class="brand-name">HDEC Daily News</span>
+    </a>
+    <div class="site-meta">
+      <span>업데이트 2026년 04월 15일 10:29</span>
+      <span class="sep">·</span>
+      <span>수집기간 04.08 ~ 04.15</span>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-tag">🏢 WEEKLY UPDATE</div>
+    <h1>
+      <span class="hero-sub">주간 업데이트되는</span>
+      <span class="hero-main">대형 건설사 동향</span>
+    </h1>
+    <p class="hero-desc">
+      삼성물산 · 삼성E&amp;A · 대우건설 · GS건설 · DL이앤씨<br>
+      <strong>5개사 사업동향</strong>을 AI로 수집, 주요 경제지·종합지 기사만 선별합니다.
+    </p>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num">56</span><span class="stat-lab">TOTAL</span></div>
+      <div class="stat"><span class="stat-num" style="color:#1428a0">8</span><span class="stat-lab">삼성물산</span></div><div class="stat"><span class="stat-num" style="color:#1428a0">4</span><span class="stat-lab">삼성 E&amp;A</span></div><div class="stat"><span class="stat-num" style="color:#003da5">10</span><span class="stat-lab">대우건설</span></div><div class="stat"><span class="stat-num" style="color:#ed1c24">20</span><span class="stat-lab">GS건설</span></div><div class="stat"><span class="stat-num" style="color:#e95c0c">14</span><span class="stat-lab">DL이앤씨</span></div>
+    </div>
+  </section>
+
+  
+    <section class="section">
+      <div class="section-head">
+        <div class="section-icon">🏢</div>
+        <div class="section-meta">
+          <h2 class="section-title" style="color:#1428a0">삼성물산</h2>
+          <div class="section-count" style="background:#1428a0">8건</div>
         </div>
-    </header>
-
-    <main class="container">
-        <div class="stats-bar">
-            <div class="stat-chip" data-company="all" onclick="filterByCompany('all')">
-                <div class="stat-company">전체</div>
-                <div class="stat-num" style="color:#15ad60">46</div>
-            </div>
-            <div class="stat-chip" data-company="삼성물산" onclick="filterByCompany('삼성물산')">
-                <div class="stat-company">삼성물산</div>
-                <div class="stat-num" style="color:#1428a0">9</div>
-            </div>
-            <div class="stat-chip" data-company="삼성EA" onclick="filterByCompany('삼성EA')">
-                <div class="stat-company">삼성E&amp;A</div>
-                <div class="stat-num" style="color:#1428a0">3</div>
-            </div>
-            <div class="stat-chip" data-company="대우건설" onclick="filterByCompany('대우건설')">
-                <div class="stat-company">대우건설</div>
-                <div class="stat-num" style="color:#003da5">12</div>
-            </div>
-            <div class="stat-chip" data-company="GS건설" onclick="filterByCompany('GS건설')">
-                <div class="stat-company">GS건설</div>
-                <div class="stat-num" style="color:#ed1c24">13</div>
-            </div>
-            <div class="stat-chip" data-company="DL이앤씨" onclick="filterByCompany('DL이앤씨')">
-                <div class="stat-company">DL이앤씨</div>
-                <div class="stat-num" style="color:#e95c0c">9</div>
-            </div>
+      </div>
+      <div class="top-cards">
+        <a class="top-card" href="https://www.donga.com/news/Economy/article/all/20260413/133730138/1" target="_blank" rel="noopener">
+          <div class="top-card-source">동아일보 · 04.13</div>
+          <h3 class="top-card-title">삼성물산, 전력거래소와 EMS 해외 수출 협력… “카타르·UAE 등 글로벌 ...</h3>
+          <p class="top-card-desc">삼성물산은 전력거래소와 전력계통운영시스템(EMS) 기술개발 및 해외 진출을 위한 업무협약(MOU)을 체결했다고 13일 밝혔다. 양측은 이번 협약을 통해 전력계통운영시스템의 신규 응용기술 개발·실증을 추진하고 실제... </p>
+          <span class="top-card-more" style="color:#1428a0">원문 기사 보기 →</span>
+        </a>
+        <a class="top-card" href="https://www.pinpointnews.co.kr/news/articleView.html?idxno=445071" target="_blank" rel="noopener">
+          <div class="top-card-source">pinpointnews.co.kr · 04.13</div>
+          <h3 class="top-card-title">신반포19·25차 재건축 수주전…삼성물산 vs 포스코이앤씨 '리턴매치'</h3>
+          <p class="top-card-desc">13일 정비업계에 따르면 삼성물산 건설부문과 포스코이앤씨는 지난 10일 신반포19·25차 재건축 조합이 진행한 시공사 선정 입찰에 각각 참여하며 경쟁 입찰이 성립됐다. 신반포19·25차 재건축은 서울 서초구 잠원동... </p>
+          <span class="top-card-more" style="color:#1428a0">원문 기사 보기 →</span>
+        </a></div><ul class="headlines">
+          <li class="headline">
+            <a href="https://www.pinpointnews.co.kr/news/articleView.html?idxno=444510" target="_blank" rel="noopener">
+              <span class="hl-title">공기 단축하고 원가 절감... 삼성물산·한신공영 모듈러주택株 동반 랠...</span>
+              <span class="hl-meta">pinpointnews.co.kr · 04.10</span>
+            </a>
+          </li>
+          <li class="headline">
+            <a href="https://www.businesspost.co.kr/BP?command=article_view&amp;num=435453" target="_blank" rel="noopener">
+              <span class="hl-title">삼성물산 올해 도시정비 수주 예열 끝, 오세철 핵심지 수주로 강자 입지...</span>
+              <span class="hl-meta">businesspost.co.kr · 04.10</span>
+            </a>
+          </li>
+          <li class="headline">
+            <a href="https://www.pressman.kr/news/articleView.html?idxno=101277" target="_blank" rel="noopener">
+              <span class="hl-title">주택 넘어 데이터센터… 삼성물산, 투자·운영까지 밸류체인 확장</span>
+              <span class="hl-meta">pressman.kr · 04.10</span>
+            </a>
+          </li>
+          <li class="headline">
+            <a href="https://www.theguru.co.kr/news/article.html?no=100344" target="_blank" rel="noopener">
+              <span class="hl-title">GE 버노바 히타치, 스웨덴 SMR 사업 박차…삼성물산 수혜 기대</span>
+              <span class="hl-meta">더구루 · 04.09</span>
+            </a>
+          </li>
+          <li class="headline">
+            <a href="https://www.hankyung.com/article/202604099435i" target="_blank" rel="noopener">
+              <span class="hl-title">삼성물산, 차세대 마감재 기술 개발…&quot;원목 질감 그대로 구현&quot;</span>
+              <span class="hl-meta">한국경제 · 04.09</span>
+            </a>
+          </li>
+          <li class="headline">
+            <a href="https://www.bizhankook.com/bk/article/31994" target="_blank" rel="noopener">
+              <span class="hl-title">[단독] 삼성물산, 압구정4구역 재입찰 현장설명회 단독 참석…수의계약...</span>
+              <span class="hl-meta">bizhankook.com · 04.08</span>
+            </a>
+          </li></ul>
+    </section>
+    <section class="section">
+      <div class="section-head">
+        <div class="section-icon">⚙️</div>
+        <div class="section-meta">
+          <h2 class="section-title" style="color:#1428a0">삼성E&amp;A</h2>
+          <div class="section-count" style="background:#1428a0">4건</div>
         </div>
-
-        <div class="tabs">
-            <div class="tab active" data-company="all" onclick="filterByCompany('all')">전체 <span class="tab-count">46</span></div>
-            <div class="tab" data-company="삼성물산" onclick="filterByCompany('삼성물산')">삼성물산 <span class="tab-count">9</span></div>
-            <div class="tab" data-company="삼성EA" onclick="filterByCompany('삼성EA')">삼성E&amp;A <span class="tab-count">3</span></div>
-            <div class="tab" data-company="대우건설" onclick="filterByCompany('대우건설')">대우건설 <span class="tab-count">12</span></div>
-            <div class="tab" data-company="GS건설" onclick="filterByCompany('GS건설')">GS건설 <span class="tab-count">13</span></div>
-            <div class="tab" data-company="DL이앤씨" onclick="filterByCompany('DL이앤씨')">DL이앤씨 <span class="tab-count">9</span></div>
+      </div>
+      <div class="top-cards">
+        <a class="top-card" href="https://www.newspim.com/news/view/20260414001022" target="_blank" rel="noopener">
+          <div class="top-card-source">뉴스핌 · 04.15</div>
+          <h3 class="top-card-title">삼성E&amp;A, 중동 플랜트 재건 호재 기대...안전·외교 변수는 부담</h3>
+          <p class="top-card-desc">이란 전쟁 이후 중동 지역 재건 기대감이 확대되면서 삼성E&amp;A를 향한 시장의 관심도 높아지고 있다. 삼성E&amp;A가 중동 플랜트 분야에서 축적해온 공사 실적과 수행 경험을 감안할 때, 향후 재건 사업이 본격화될 경우 수주... </p>
+          <span class="top-card-more" style="color:#1428a0">원문 기사 보기 →</span>
+        </a>
+        <a class="top-card" href="http://www.biztribune.co.kr/news/articleView.html?idxno=352257" target="_blank" rel="noopener">
+          <div class="top-card-source">biztribune.co.kr · 04.13</div>
+          <h3 class="top-card-title">&quot;삼성E&amp;A, 1분기 영업익 1,741억원 전망… 최고 수준의 신규수주 기대&quot; ...</h3>
+          <p class="top-card-desc">LS증권은 13일 삼성E&amp;A가 그룹사 물량 확대와 중동발 대형 화공 플랜트 수주에 힘입어 올해 기록적인 성장을 달성할 것으로 분석했다. 김세련 LS증권 연구원은 &quot;삼성E&amp;A의 2026년 1분기 실적은 매출액 2조 3,510억 원(전년... </p>
+          <span class="top-card-more" style="color:#1428a0">원문 기사 보기 →</span>
+        </a></div><ul class="headlines">
+          <li class="headline">
+            <a href="http://www.wowtv.co.kr/NewsCenter/News/Read?articleId=A202604100364&amp;t=NN" target="_blank" rel="noopener">
+              <span class="hl-title">[단독] 삼성바이오, 6공장 건설 허가 신청…시공은 삼성E&amp;A</span>
+              <span class="hl-meta">wowtv.co.kr · 04.10</span>
+            </a>
+          </li>
+          <li class="headline">
+            <a href="https://www.businesspost.co.kr/BP?command=article_view&amp;num=435329" target="_blank" rel="noopener">
+              <span class="hl-title">삼성E&amp;A에 중동 재건 수혜 기대감 높아져, 남궁홍 주무대서 보폭 다시 넓...</span>
+              <span class="hl-meta">businesspost.co.kr · 04.09</span>
+            </a>
+          </li></ul>
+    </section>
+    <section class="section">
+      <div class="section-head">
+        <div class="section-icon">🏗️</div>
+        <div class="section-meta">
+          <h2 class="section-title" style="color:#003da5">대우건설</h2>
+          <div class="section-count" style="background:#003da5">10건</div>
         </div>
-
-        <div class="legend">
-            <div class="legend-item"><div class="legend-dot" style="background:#1428a0"></div>삼성</div>
-            <div class="legend-item"><div class="legend-dot" style="background:#003da5"></div>대우건설</div>
-            <div class="legend-item"><div class="legend-dot" style="background:#ed1c24"></div>GS건설</div>
-            <div class="legend-item"><div class="legend-dot" style="background:#e95c0c"></div>DL이앤씨</div>
-            <span class="legend-criteria">네이버 뉴스 API 기반 · 사업동향 스코어링 · 회사별 상위 5건 자동 선정</span>
+      </div>
+      <div class="top-cards">
+        <a class="top-card" href="https://www.newspim.com/news/view/20260415000325" target="_blank" rel="noopener">
+          <div class="top-card-source">뉴스핌 · 04.15</div>
+          <h3 class="top-card-title">대우건설·한전 손잡았다…터널 뚫는 'TBM' 설계 기술 고도화 맞손</h3>
+          <p class="top-card-desc">대우건설이 한국전력공사(이하 한전)와 손잡고 터널 굴착 장비인 'TBM(Tunnel Boring Machine)'의 설계 기술 수준을 한 단계 끌어올리기 위한 업무협약(MOU)을 맺었다고 15일 밝혔다. 지난 14일 서울 중구 대우건설 본사에서... </p>
+          <span class="top-card-more" style="color:#003da5">원문 기사 보기 →</span>
+        </a>
+        <a class="top-card" href="https://www.businesspost.co.kr/BP?command=article_view&amp;num=435582" target="_blank" rel="noopener">
+          <div class="top-card-source">businesspost.co.kr · 04.13</div>
+          <h3 class="top-card-title">대우건설 신성장동력 모색 박차, 원자력 이어 데이터센터 전담조직 만들...</h3>
+          <p class="top-card-desc">대우건설이 출자자 및 시공사로 참여하는 '장성파인데이터센터' 조감도. 대우건설&gt; 대우건설이 데이터센터 사업을 새 성장 동력으로 점찍고 전담조직을 만들었다. 대우건설은 국내 데이터센터 수요 확대에 적극... </p>
+          <span class="top-card-more" style="color:#003da5">원문 기사 보기 →</span>
+        </a></div><ul class="headlines">
+          <li class="headline">
+            <a href="https://www.bizwork.co.kr/news/articleView.html?idxno=414505" target="_blank" rel="noopener">
+              <span class="hl-title">대우건설, 흑석뉴타운 '써밋 더힐' 5월 분양</span>
+              <span class="hl-meta">bizwork.co.kr · 04.13</span>
+            </a>
+          </li>
+          <li class="headline">
+            <a href="https://www.insight.co.kr/news/549765" target="_blank" rel="noopener">
+              <span class="hl-title">성수4지구, 롯데건설 '르엘' 앞세워 재도전... 대우건설 아직도 검토 중</span>
+              <span class="hl-meta">insight.co.kr · 04.10</span>
+            </a>
+          </li>
+          <li class="headline">
+            <a href="http://www.4th.kr/news/articleView.html?idxno=2110300" target="_blank" rel="noopener">
+              <span class="hl-title">대우건설, 대장홍대선 계약 해지…&quot;사업 포트폴리오 조정&quot;</span>
+              <span class="hl-meta">4th.kr · 04.10</span>
+            </a>
+          </li>
+          <li class="headline">
+            <a href="https://www.kdpress.co.kr/news/articleView.html?idxno=204187" target="_blank" rel="noopener">
+              <span class="hl-title">HJ중공업, 대웅제약, 엘앤에프, 대우건설, 썸에이지 외</span>
+              <span class="hl-meta">kdpress.co.kr · 04.10</span>
+            </a>
+          </li>
+          <li class="headline">
+            <a href="https://www.fetv.co.kr/news/article.html?no=216639" target="_blank" rel="noopener">
+              <span class="hl-title">대우건설, 도미니크 페로와 ‘도시·주거 협업’ 타진…디자인 경쟁력 ...</span>
+              <span class="hl-meta">fetv.co.kr · 04.09</span>
+            </a>
+          </li>
+          <li class="headline">
+            <a href="https://www.m-economynews.com/news/article.html?no=66181" target="_blank" rel="noopener">
+              <span class="hl-title">대우건설, 올해 정비사업 수주액 2조원 돌파</span>
+              <span class="hl-meta">m-economynews.com · 04.07</span>
+            </a>
+          </li>
+          <li class="headline">
+            <a href="https://news.mtn.co.kr/news-detail/2026040711113929064" target="_blank" rel="noopener">
+              <span class="hl-title">대우건설, 해외 네크워크 강점 살려 원전사업 승부수</span>
+              <span class="hl-meta">news.mtn.co.kr · 04.07</span>
+            </a>
+          </li>
+          <li class="headline">
+            <a href="https://www.thebell.co.kr/free/content/ArticleView.asp?key=202604031133290400109484" target="_blank" rel="noopener">
+              <span class="hl-title">[더벨][건설부동산 줌人] 한승 대우건설 전무, '해외·원전' 사업 총괄한...</span>
+              <span class="hl-meta">더벨 · 04.07</span>
+            </a>
+          </li></ul>
+    </section>
+    <section class="section">
+      <div class="section-head">
+        <div class="section-icon">🏛️</div>
+        <div class="section-meta">
+          <h2 class="section-title" style="color:#ed1c24">GS건설</h2>
+          <div class="section-count" style="background:#ed1c24">20건</div>
         </div>
-
-
-        <div class="company-section visible" data-company="삼성물산">
-            <div class="section-divider"><span>삼성물산</span><span class="section-count">9건</span></div>
-
-            <article class="card">
-                <div class="card-inner">
-                    <div class="card-tags"><span class="tag tag-samsung">삼성물산</span><span class="tag tag-compete">수주·계약</span></div>
-                    <h2 class="card-title">
-                        <a href="https://www.pinpointnews.co.kr/news/articleView.html?idxno=445071" target="_blank">신반포19·25차 재건축 수주전…삼성물산 vs 포스코이앤씨 '리턴매치'</a>
-                    </h2>
-                    <div class="card-footer">
-                        <span class="card-source">pinpointnews.co.kr · 2026-04-13</span>
-                        <a class="card-link" href="https://www.pinpointnews.co.kr/news/articleView.html?idxno=445071" target="_blank">
-                            기사 원문
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-            <article class="card">
-                <div class="card-inner">
-                    <div class="card-tags"><span class="tag tag-samsung">삼성물산</span><span class="tag tag-strategy">전략·MOU</span></div>
-                    <h2 class="card-title">
-                        <a href="https://www.businesskorea.co.kr/news/articleView.html?idxno=267619" target="_blank">삼성물산, 전력거래소와 업무협약 체결</a>
-                    </h2>
-                    <div class="card-footer">
-                        <span class="card-source">businesskorea.co.kr · 2026-04-13</span>
-                        <a class="card-link" href="https://www.businesskorea.co.kr/news/articleView.html?idxno=267619" target="_blank">
-                            기사 원문
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-            <article class="card">
-                <div class="card-inner">
-                    <div class="card-tags"><span class="tag tag-samsung">삼성물산</span><span class="tag tag-compete">입찰</span></div>
-                    <h2 class="card-title">
-                        <a href="https://www.hankyung.com/article/2026040905126" target="_blank">삼성물산도 '책임준공 약속' 구애…압구정의 힘 [이슬기의 새집다오]</a>
-                    </h2>
-                    <div class="card-footer">
-                        <span class="card-source">한국경제 · 2026-04-11</span>
-                        <a class="card-link" href="https://www.hankyung.com/article/2026040905126" target="_blank">
-                            기사 원문
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-            <article class="card">
-                <div class="card-inner">
-                    <div class="card-tags"><span class="tag tag-samsung">삼성물산</span><span class="tag tag-energy">에너지</span></div>
-                    <h2 class="card-title">
-                        <a href="https://www.pressman.kr/news/articleView.html?idxno=101277" target="_blank">주택 넘어 데이터센터… 삼성물산, 투자·운영까지 밸류체인 확장</a>
-                    </h2>
-                    <div class="card-footer">
-                        <span class="card-source">pressman.kr · 2026-04-10</span>
-                        <a class="card-link" href="https://www.pressman.kr/news/articleView.html?idxno=101277" target="_blank">
-                            기사 원문
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-            <article class="card">
-                <div class="card-inner">
-                    <div class="card-tags"><span class="tag tag-samsung">삼성물산</span><span class="tag tag-energy">해외</span></div>
-                    <h2 class="card-title">
-                        <a href="https://www.pinpointnews.co.kr/news/articleView.html?idxno=444510" target="_blank">공기 단축하고 원가 절감... 삼성물산·한신공영 모듈러주택株 동반 랠...</a>
-                    </h2>
-                    <div class="card-footer">
-                        <span class="card-source">pinpointnews.co.kr · 2026-04-10</span>
-                        <a class="card-link" href="https://www.pinpointnews.co.kr/news/articleView.html?idxno=444510" target="_blank">
-                            기사 원문
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-            <article class="card">
-                <div class="card-inner">
-                    <div class="card-tags"><span class="tag tag-samsung">삼성물산</span><span class="tag tag-energy">해외</span></div>
-                    <h2 class="card-title">
-                        <a href="https://www.theguru.co.kr/news/article.html?no=100344" target="_blank">GE 버노바 히타치, 스웨덴 SMR 사업 박차…삼성물산 수혜 기대</a>
-                    </h2>
-                    <div class="card-footer">
-                        <span class="card-source">더구루 · 2026-04-09</span>
-                        <a class="card-link" href="https://www.theguru.co.kr/news/article.html?no=100344" target="_blank">
-                            기사 원문
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-            <article class="card">
-                <div class="card-inner">
-                    <div class="card-tags"><span class="tag tag-samsung">삼성물산</span><span class="tag tag-tech">기술</span></div>
-                    <h2 class="card-title">
-                        <a href="https://www.hankyung.com/article/202604099435i" target="_blank">삼성물산, 차세대 마감재 기술 개발…&quot;원목 질감 그대로 구현&quot;</a>
-                    </h2>
-                    <div class="card-footer">
-                        <span class="card-source">한국경제 · 2026-04-09</span>
-                        <a class="card-link" href="https://www.hankyung.com/article/202604099435i" target="_blank">
-                            기사 원문
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-            <article class="card">
-                <div class="card-inner">
-                    <div class="card-tags"><span class="tag tag-samsung">삼성물산</span><span class="tag tag-compete">입찰</span></div>
-                    <h2 class="card-title">
-                        <a href="https://www.bizhankook.com/bk/article/31994" target="_blank">[단독] 삼성물산, 압구정4구역 재입찰 현장설명회 단독 참석…수의계약...</a>
-                    </h2>
-                    <div class="card-footer">
-                        <span class="card-source">bizhankook.com · 2026-04-08</span>
-                        <a class="card-link" href="https://www.bizhankook.com/bk/article/31994" target="_blank">
-                            기사 원문
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-            <article class="card">
-                <div class="card-inner">
-                    <div class="card-tags"><span class="tag tag-samsung">삼성물산</span><span class="tag tag-compete">입찰</span></div>
-                    <h2 class="card-title">
-                        <a href="https://news.tf.co.kr/read/economy/2310036.htm" target="_blank">압구정이 깬 삼성물산 원칙…여의도까지 번지나, 업계 '촉각'</a>
-                    </h2>
-                    <div class="card-footer">
-                        <span class="card-source">news.tf.co.kr · 2026-04-06</span>
-                        <a class="card-link" href="https://news.tf.co.kr/read/economy/2310036.htm" target="_blank">
-                            기사 원문
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
+      </div>
+      <div class="top-cards">
+        <a class="top-card" href="https://www.theguru.co.kr/news/article.html?no=100565" target="_blank" rel="noopener">
+          <div class="top-card-source">더구루 · 04.15</div>
+          <h3 class="top-card-title">GS건설, 폴란드 디벨로퍼와 바르샤바 공동 주거단지 개발 협약</h3>
+          <p class="top-card-desc">폴란드 바르샤바 인근에 단독주택 단지 건설 해외 수주 시장 다변화 박차  GS건설이 폴란드 주택 개발 사업에 공식 착수했다. 미국·이스라엘과 이란 간 전쟁으로 중동 건설 시장이 위축된 가운데 해외 수주 시장... </p>
+          <span class="top-card-more" style="color:#ed1c24">원문 기사 보기 →</span>
+        </a>
+        <a class="top-card" href="https://www.gokorea.kr/news/articleView.html?idxno=863549" target="_blank" rel="noopener">
+          <div class="top-card-source">gokorea.kr · 04.14</div>
+          <h3 class="top-card-title">GS건설 신기술로 교량 내구성 혁신…시공기간 단축과 원가 절감 기대</h3>
+          <p class="top-card-desc">GS건설은 최근 모듈러 교량의 주요한 문제였던 '접합부 견고성'을 해결하기 위한 혁신적인 기술 개발을 완료하고, 성능 공개실험을 마쳤다고 14일 밝혔다. 이로써 장기간 고질적인 문제였던 교량 구조의 내구성 문제가... </p>
+          <span class="top-card-more" style="color:#ed1c24">원문 기사 보기 →</span>
+        </a></div><ul class="headlines">
+          <li class="headline">
+            <a href="https://www.dnews.co.kr/uhtml/view.jsp?idxno=202604141043014300144" target="_blank" rel="noopener">
+              <span class="hl-title">GS건설-GPC, 모듈러 교량 접합성능 높인 PC바닥판 개발</span>
+              <span class="hl-meta">대한경제 · 04.14</span>
+            </a>
+          </li>
+          <li class="headline">
+            <a href="https://www.kyosu.net/news/articleView.html?idxno=203653" target="_blank" rel="noopener">
+              <span class="hl-title">동신대 산림조경학과, GS건설 채용설명회 '인기'</span>
+              <span class="hl-meta">kyosu.net · 04.14</span>
+            </a>
+          </li>
+          <li class="headline">
+            <a href="https://www.ksilbo.co.kr/news/articleView.html?idxno=1053841" target="_blank" rel="noopener">
+              <span class="hl-title">'압도적 찬성'으로 시공사 교체 택한 상대원2구역, GS건설 체제 '초읽기...</span>
+              <span class="hl-meta">ksilbo.co.kr · 04.13</span>
+            </a>
+          </li>
+          <li class="headline">
+            <a href="https://www.huffingtonpost.kr/article/256587" target="_blank" rel="noopener">
+              <span class="hl-title">허윤홍 기막힌 GS건설 도시정비사업 선구안? 건설사 눈치싸움에도 '새로...</span>
+              <span class="hl-meta">huffingtonpost.kr · 04.13</span>
+            </a>
+          </li>
+          <li class="headline">
+            <a href="https://www.safetynews.co.kr/news/articleView.html?idxno=247567" target="_blank" rel="noopener">
+              <span class="hl-title">영업정지 앞둔 GS건설, 성수1구역 수주전 미칠 영향은?</span>
+              <span class="hl-meta">safetynews.co.kr · 04.12</span>
+            </a>
+          </li>
+          <li class="headline">
+            <a href="https://www.pinpointnews.co.kr/news/articleView.html?idxno=444741" target="_blank" rel="noopener">
+              <span class="hl-title">주택 둔화에도 기회… GS건설, 원전 기대감 부각</span>
+              <span class="hl-meta">pinpointnews.co.kr · 04.12</span>
+            </a>
+          </li>
+          <li class="headline">
+            <a href="https://www.pinpointnews.co.kr/news/articleView.html?idxno=444369" target="_blank" rel="noopener">
+              <span class="hl-title">GS건설, 매출 줄고 이익 늘었다…체질 개선 신호</span>
+              <span class="hl-meta">pinpointnews.co.kr · 04.11</span>
+            </a>
+          </li>
+          <li class="headline">
+            <a href="https://www.newsquest.co.kr/news/articleView.html?idxno=264555" target="_blank" rel="noopener">
+              <span class="hl-title">&quot;GS건설, 나도 원전 해봤다…현대·대우에 밀려 주간사 경험은 없다&quot;</span>
+              <span class="hl-meta">newsquest.co.kr · 04.10</span>
+            </a>
+          </li>
+          <li class="headline">
+            <a href="https://www.news1.kr/realestate/general/6132344" target="_blank" rel="noopener">
+              <span class="hl-title">GS건설, 美 아모지와 합작투자 체결…에너지 사업 확장</span>
+              <span class="hl-meta">뉴스1 · 04.10</span>
+            </a>
+          </li>
+          <li class="headline">
+            <a href="http://www.hansbiz.co.kr/news/articleView.html?idxno=831821" target="_blank" rel="noopener">
+              <span class="hl-title">GS건설, '모듈러 주택 엘리베이터 기술개발' MOU</span>
+              <span class="hl-meta">hansbiz.co.kr · 04.09</span>
+            </a>
+          </li>
+          <li class="headline">
+            <a href="https://realty.chosun.com/site/data/html_dir/2026/04/08/2026040803487.html" target="_blank" rel="noopener">
+              <span class="hl-title">GS건설, 허창수→허윤홍 본격 세대 교체…호실적에 성과급 활짝</span>
+              <span class="hl-meta">realty.chosun.com · 04.09</span>
+            </a>
+          </li>
+          <li class="headline">
+            <a href="https://www.newsquest.co.kr/news/articleView.html?idxno=264449" target="_blank" rel="noopener">
+              <span class="hl-title">&quot;GS건설, 인프라·플랜트 매출과 수주 시원찮다…건축주택 홀로 선방할...</span>
+              <span class="hl-meta">newsquest.co.kr · 04.08</span>
+            </a>
+          </li>
+          <li class="headline">
+            <a href="https://www.businesspost.co.kr/BP?command=article_view&amp;num=435238" target="_blank" rel="noopener">
+              <span class="hl-title">GS건설도 '원전 역량' 있다, 미국에 베트남까지 원전 참여 높아지는 기...</span>
+              <span class="hl-meta">businesspost.co.kr · 04.08</span>
+            </a>
+          </li>
+          <li class="headline">
+            <a href="https://www.donga.com/news/Economy/article/all/20260408/133701264/1" target="_blank" rel="noopener">
+              <span class="hl-title">자본과 건설의 맞손… 하나금융·GS건설, ‘AI 데이터센터’ 영토 넓힌...</span>
+              <span class="hl-meta">동아일보 · 04.08</span>
+            </a>
+          </li>
+          <li class="headline">
+            <a href="https://www.m-i.kr/news/articleView.html?idxno=1362812" target="_blank" rel="noopener">
+              <span class="hl-title">성수1지구 '리베니크 자이' 베일 벗는다…GS건설, 홍보관 개관</span>
+              <span class="hl-meta">m-i.kr · 04.08</span>
+            </a>
+          </li>
+          <li class="headline">
+            <a href="https://www.pinpointnews.co.kr/news/articleView.html?idxno=443825" target="_blank" rel="noopener">
+              <span class="hl-title">아파트만 짓는 게 아니다… GS건설, 수처리·태양광 등 신성장동력 풀가...</span>
+              <span class="hl-meta">pinpointnews.co.kr · 04.08</span>
+            </a>
+          </li>
+          <li class="headline">
+            <a href="http://www.wowtv.co.kr/NewsCenter/News/Read?articleId=A202604070430&amp;t=NN" target="_blank" rel="noopener">
+              <span class="hl-title">GS건설, 시멘트사와 초고층 건물 시공 안정성 향상 업무협약</span>
+              <span class="hl-meta">wowtv.co.kr · 04.07</span>
+            </a>
+          </li>
+          <li class="headline">
+            <a href="https://www.businesspost.co.kr/BP?command=article_view&amp;num=435140" target="_blank" rel="noopener">
+              <span class="hl-title">LH·GS건설 서울 성북1구역 공동사업시행 협약, '자이 비:원' 2027년 사업...</span>
+              <span class="hl-meta">businesspost.co.kr · 04.07</span>
+            </a>
+          </li></ul>
+    </section>
+    <section class="section">
+      <div class="section-head">
+        <div class="section-icon">🏘️</div>
+        <div class="section-meta">
+          <h2 class="section-title" style="color:#e95c0c">DL이앤씨</h2>
+          <div class="section-count" style="background:#e95c0c">14건</div>
         </div>
-        <div class="company-section visible" data-company="삼성EA">
-            <div class="section-divider"><span>삼성E&amp;A</span><span class="section-count">3건</span></div>
+      </div>
+      <div class="top-cards">
+        <a class="top-card" href="http://www.inews24.com/view/1960174" target="_blank" rel="noopener">
+          <div class="top-card-source">inews24.com · 04.15</div>
+          <h3 class="top-card-title">[단독] &quot;입찰보증금 420억원 돌려달라&quot;⋯DL이앤씨, 부산 우동1구역과 소...</h3>
+          <p class="top-card-desc">DL이앤씨가 부산 우동1구역 재건축정비사업조합을 상대로 420억원 규모의 입찰보증금 반환 소송을 제기했다. 조합이 지난해 11월 DL이앤씨의 시공사 선정을 취소하자, 과거 납부한 보증금을 돌려달라고 나선 것이다.... </p>
+          <span class="top-card-more" style="color:#e95c0c">원문 기사 보기 →</span>
+        </a>
+        <a class="top-card" href="https://www.bloter.net/news/articleView.html?idxno=659431" target="_blank" rel="noopener">
+          <div class="top-card-source">bloter.net · 04.14</div>
+          <h3 class="top-card-title">[건설 먹거리 X파일] DL이앤씨, SMR 웃고 탄소포집 울었다</h3>
+          <p class="top-card-desc">DL이앤씨가 추진하는 신사업의 희비가 엇갈렸다. 차세대 원전으로 꼽히는 소형모듈원전(SMR) 투자는 10개월 만에 가치가 두 배 이상 뛰었으나 탄소포집활용저장(CCUS) 사업은 투자금을 전액 손실 처리했다. 주택 경기... </p>
+          <span class="top-card-more" style="color:#e95c0c">원문 기사 보기 →</span>
+        </a></div><ul class="headlines">
+          <li class="headline">
+            <a href="http://www.ikld.kr/news/articleView.html?idxno=332838" target="_blank" rel="noopener">
+              <span class="hl-title">상대원2구역, DL이앤씨 시공권 공식 박탈</span>
+              <span class="hl-meta">ikld.kr · 04.14</span>
+            </a>
+          </li>
+          <li class="headline">
+            <a href="https://www.dailian.co.kr/news/view/1633560/?sc=Naver" target="_blank" rel="noopener">
+              <span class="hl-title">노량진뉴타운 재개발…DL이앤씨, ‘아크로 리버스카이’ 5월 분양</span>
+              <span class="hl-meta">dailian.co.kr · 04.14</span>
+            </a>
+          </li>
+          <li class="headline">
+            <a href="http://www.fntimes.com/html/view.php?ud=202604131707298817048b718333_18" target="_blank" rel="noopener">
+              <span class="hl-title">대우·DL이앤씨 컨소시엄 등 대형 건설사 신규 분양…서울·수도권·지방...</span>
+              <span class="hl-meta">fntimes.com · 04.13</span>
+            </a>
+          </li>
+          <li class="headline">
+            <a href="https://www.pinpointnews.co.kr/news/articleView.html?idxno=444739" target="_blank" rel="noopener">
+              <span class="hl-title">&quot;단기 실적보다 미래&quot;… DL이앤씨, 모멘텀 주목을</span>
+              <span class="hl-meta">pinpointnews.co.kr · 04.12</span>
+            </a>
+          </li>
+          <li class="headline">
+            <a href="https://www.bizhankook.com/bk/article/32027" target="_blank" rel="noopener">
+              <span class="hl-title">압구정5구역 수주전 성사…현대건설·DL이앤씨 6년 만에 재격돌</span>
+              <span class="hl-meta">bizhankook.com · 04.11</span>
+            </a>
+          </li>
+          <li class="headline">
+            <a href="https://www.news1.kr/realestate/general/6132296" target="_blank" rel="noopener">
+              <span class="hl-title">목동재건축 첫주자 6단지 시공사 입찰에 DL이앤씨 단독 응찰</span>
+              <span class="hl-meta">뉴스1 · 04.10</span>
+            </a>
+          </li>
+          <li class="headline">
+            <a href="http://www.seoulwire.com/news/articleView.html?idxno=715985" target="_blank" rel="noopener">
+              <span class="hl-title">[CEO투데이] 위기 속 빛난 박상신 DL이앤씨 부회장의 '내실 경영'</span>
+              <span class="hl-meta">seoulwire.com · 04.10</span>
+            </a>
+          </li>
+          <li class="headline">
+            <a href="https://www.newsquest.co.kr/news/articleView.html?idxno=264559" target="_blank" rel="noopener">
+              <span class="hl-title">DL이앤씨 순이익 '착시'…대손상각비와 자본잠식 종속기업으로 세전이익...</span>
+              <span class="hl-meta">newsquest.co.kr · 04.10</span>
+            </a>
+          </li>
+          <li class="headline">
+            <a href="http://www.fnnews.com/news/202604090902119764" target="_blank" rel="noopener">
+              <span class="hl-title">DL이앤씨, 강서구 초등학생 대상 창의·융합 교육 운영</span>
+              <span class="hl-meta">파이낸셜뉴스 · 04.09</span>
+            </a>
+          </li>
+          <li class="headline">
+            <a href="https://www.newsquest.co.kr/news/articleView.html?idxno=264452" target="_blank" rel="noopener">
+              <span class="hl-title">&quot;DL이앤씨, 무난한 1분기 실적 달성…SMR도 사업 중심축으로 확대&quot;</span>
+              <span class="hl-meta">newsquest.co.kr · 04.08</span>
+            </a>
+          </li>
+          <li class="headline">
+            <a href="http://www.beyondpost.co.kr/view.php?ud=202604081551481029205868f676_30" target="_blank" rel="noopener">
+              <span class="hl-title">DL이앤씨, 선호도·청약·품질 '트리플 크라운'으로 하이엔드 평정</span>
+              <span class="hl-meta">beyondpost.co.kr · 04.08</span>
+            </a>
+          </li>
+          <li class="headline">
+            <a href="http://www.biztribune.co.kr/news/articleView.html?idxno=352072" target="_blank" rel="noopener">
+              <span class="hl-title">DL이앤씨, 이제 시작인 SMR 모멘텀 - 키움증권</span>
+              <span class="hl-meta">biztribune.co.kr · 04.08</span>
+            </a>
+          </li></ul>
+    </section>
 
-            <article class="card">
-                <div class="card-inner">
-                    <div class="card-tags"><span class="tag tag-sea">삼성E&amp;A</span><span class="tag tag-finance">실적</span></div>
-                    <h2 class="card-title">
-                        <a href="http://www.biztribune.co.kr/news/articleView.html?idxno=352257" target="_blank">&quot;삼성E&amp;A, 1분기 영업익 1,741억원 전망… 최고 수준의 신규수주 기대&quot; ...</a>
-                    </h2>
-                    <div class="card-footer">
-                        <span class="card-source">biztribune.co.kr · 2026-04-13</span>
-                        <a class="card-link" href="http://www.biztribune.co.kr/news/articleView.html?idxno=352257" target="_blank">
-                            기사 원문
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-            <article class="card">
-                <div class="card-inner">
-                    <div class="card-tags"><span class="tag tag-sea">삼성E&amp;A</span><span class="tag tag-compete">착공·준공</span></div>
-                    <h2 class="card-title">
-                        <a href="http://www.wowtv.co.kr/NewsCenter/News/Read?articleId=A202604100364&amp;t=NN" target="_blank">[단독] 삼성바이오, 6공장 건설 허가 신청…시공은 삼성E&amp;A</a>
-                    </h2>
-                    <div class="card-footer">
-                        <span class="card-source">wowtv.co.kr · 2026-04-10</span>
-                        <a class="card-link" href="http://www.wowtv.co.kr/NewsCenter/News/Read?articleId=A202604100364&amp;t=NN" target="_blank">
-                            기사 원문
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-            <article class="card">
-                <div class="card-inner">
-                    <div class="card-tags"><span class="tag tag-sea">삼성E&amp;A</span><span class="tag tag-compete">수주·계약</span></div>
-                    <h2 class="card-title">
-                        <a href="https://www.ilovepc.co.kr/news/articleView.html?idxno=58917" target="_blank">중동 재건 18조 수주 가능… 삼성E&amp;A·현대건설 등 채비</a>
-                    </h2>
-                    <div class="card-footer">
-                        <span class="card-source">ilovepc.co.kr · 2026-04-09</span>
-                        <a class="card-link" href="https://www.ilovepc.co.kr/news/articleView.html?idxno=58917" target="_blank">
-                            기사 원문
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-        </div>
-        <div class="company-section visible" data-company="대우건설">
-            <div class="section-divider"><span>대우건설</span><span class="section-count">12건</span></div>
+  <footer class="site-footer">
+    <div>현대건설 글로벌사업부 · 내부 업무용</div>
+    <div class="tech">Powered by Naver News API · GitHub Pages</div>
+  </footer>
 
-            <article class="card">
-                <div class="card-inner">
-                    <div class="card-tags"><span class="tag tag-daewoo">대우건설</span><span class="tag tag-energy">해외</span></div>
-                    <h2 class="card-title">
-                        <a href="https://www.s-journal.co.kr/news/articleView.html?idxno=40436" target="_blank">대우건설, '데이터센터 TFT' 신설… AI 인프라 시장 공략 본격화</a>
-                    </h2>
-                    <div class="card-footer">
-                        <span class="card-source">s-journal.co.kr · 2026-04-13</span>
-                        <a class="card-link" href="https://www.s-journal.co.kr/news/articleView.html?idxno=40436" target="_blank">
-                            기사 원문
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-            <article class="card">
-                <div class="card-inner">
-                    <div class="card-tags"><span class="tag tag-daewoo">대우건설</span><span class="tag tag-compete">정비사업</span></div>
-                    <h2 class="card-title">
-                        <a href="http://www.lawissue.co.kr/view.php?ud=20260413135636332467191f6c6e_12" target="_blank">대우건설, 흑석11구역 재개발 ‘써밋 더힐’ 5월 공급</a>
-                    </h2>
-                    <div class="card-footer">
-                        <span class="card-source">lawissue.co.kr · 2026-04-13</span>
-                        <a class="card-link" href="http://www.lawissue.co.kr/view.php?ud=20260413135636332467191f6c6e_12" target="_blank">
-                            기사 원문
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-            <article class="card">
-                <div class="card-inner">
-                    <div class="card-tags"><span class="tag tag-daewoo">대우건설</span><span class="tag tag-compete">착공·준공</span></div>
-                    <h2 class="card-title">
-                        <a href="https://www.nocutnews.co.kr/news/6501287?utm_source=naver&amp;utm_medium=article&amp;utm_campaign=20260413023053" target="_blank">대우건설 '업성 푸르지오 레이크시티' 13일부터 청약일정 돌입</a>
-                    </h2>
-                    <div class="card-footer">
-                        <span class="card-source">nocutnews.co.kr · 2026-04-13</span>
-                        <a class="card-link" href="https://www.nocutnews.co.kr/news/6501287?utm_source=naver&amp;utm_medium=article&amp;utm_campaign=20260413023053" target="_blank">
-                            기사 원문
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-            <article class="card">
-                <div class="card-inner">
-                    <div class="card-tags"><span class="tag tag-daewoo">대우건설</span><span class="tag tag-compete">수주·계약</span></div>
-                    <h2 class="card-title">
-                        <a href="https://www.digitaltoday.co.kr/news/articleView.html?idxno=655972" target="_blank">대우건설, 대장~홍대 광역철도 공사 계약 해지</a>
-                    </h2>
-                    <div class="card-footer">
-                        <span class="card-source">digitaltoday.co.kr · 2026-04-10</span>
-                        <a class="card-link" href="https://www.digitaltoday.co.kr/news/articleView.html?idxno=655972" target="_blank">
-                            기사 원문
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-            <article class="card">
-                <div class="card-inner">
-                    <div class="card-tags"><span class="tag tag-daewoo">대우건설</span><span class="tag tag-strategy">전략·MOU</span></div>
-                    <h2 class="card-title">
-                        <a href="https://biz.chosun.com/real_estate/real_estate_general/2026/04/09/MWNUHG6XE5HRHGC3JKLBCWYPZM/?utm_source=naver&amp;utm_medium=original&amp;utm_campaign=biz" target="_blank">KIND, 대우건설·印尼 최대 부동산 개발사와 인도네시아 개발 사업 업무...</a>
-                    </h2>
-                    <div class="card-footer">
-                        <span class="card-source">biz.chosun.com · 2026-04-09</span>
-                        <a class="card-link" href="https://biz.chosun.com/real_estate/real_estate_general/2026/04/09/MWNUHG6XE5HRHGC3JKLBCWYPZM/?utm_source=naver&amp;utm_medium=original&amp;utm_campaign=biz" target="_blank">
-                            기사 원문
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-            <article class="card">
-                <div class="card-inner">
-                    <div class="card-tags"><span class="tag tag-daewoo">대우건설</span><span class="tag tag-compete">수주·계약</span></div>
-                    <h2 class="card-title">
-                        <a href="https://news.mtn.co.kr/news-detail/2026040711113929064" target="_blank">대우건설, 해외 네크워크 강점 살려 원전사업 승부수</a>
-                    </h2>
-                    <div class="card-footer">
-                        <span class="card-source">news.mtn.co.kr · 2026-04-07</span>
-                        <a class="card-link" href="https://news.mtn.co.kr/news-detail/2026040711113929064" target="_blank">
-                            기사 원문
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-            <article class="card">
-                <div class="card-inner">
-                    <div class="card-tags"><span class="tag tag-daewoo">대우건설</span><span class="tag tag-compete">수주·계약</span></div>
-                    <h2 class="card-title">
-                        <a href="https://www.thebell.co.kr/free/content/ArticleView.asp?key=202604031133290400109484" target="_blank">[더벨][건설부동산 줌人] 한승 대우건설 전무, '해외·원전' 사업 총괄한...</a>
-                    </h2>
-                    <div class="card-footer">
-                        <span class="card-source">더벨 · 2026-04-07</span>
-                        <a class="card-link" href="https://www.thebell.co.kr/free/content/ArticleView.asp?key=202604031133290400109484" target="_blank">
-                            기사 원문
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-            <article class="card">
-                <div class="card-inner">
-                    <div class="card-tags"><span class="tag tag-daewoo">대우건설</span><span class="tag tag-compete">수주·계약</span></div>
-                    <h2 class="card-title">
-                        <a href="https://www.hankyung.com/article/2026040622821" target="_blank">대우건설, 기흥1·성산3 수주</a>
-                    </h2>
-                    <div class="card-footer">
-                        <span class="card-source">한국경제 · 2026-04-06</span>
-                        <a class="card-link" href="https://www.hankyung.com/article/2026040622821" target="_blank">
-                            기사 원문
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-            <article class="card">
-                <div class="card-inner">
-                    <div class="card-tags"><span class="tag tag-daewoo">대우건설</span><span class="tag tag-energy">해외</span></div>
-                    <h2 class="card-title">
-                        <a href="http://www.hansbiz.co.kr/news/articleView.html?idxno=830641" target="_blank">원전 키우는 대우건설…조직개편에 담긴 '에너지 전환'</a>
-                    </h2>
-                    <div class="card-footer">
-                        <span class="card-source">hansbiz.co.kr · 2026-04-06</span>
-                        <a class="card-link" href="http://www.hansbiz.co.kr/news/articleView.html?idxno=830641" target="_blank">
-                            기사 원문
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-            <article class="card">
-                <div class="card-inner">
-                    <div class="card-tags"><span class="tag tag-daewoo">대우건설</span><span class="tag tag-compete">수주·계약</span></div>
-                    <h2 class="card-title">
-                        <a href="https://www.meconomynews.com/news/articleView.html?idxno=129904" target="_blank">대우건설, 성수4지구 철회 검토 돌입... 수뇌부·사업팀 '이견' 확인</a>
-                    </h2>
-                    <div class="card-footer">
-                        <span class="card-source">meconomynews.com · 2026-04-06</span>
-                        <a class="card-link" href="https://www.meconomynews.com/news/articleView.html?idxno=129904" target="_blank">
-                            기사 원문
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-            <article class="card">
-                <div class="card-inner">
-                    <div class="card-tags"><span class="tag tag-daewoo">대우건설</span><span class="tag tag-compete">수주·계약</span></div>
-                    <h2 class="card-title">
-                        <a href="https://www.newspost.kr/news/articleView.html?idxno=222168" target="_blank">대우건설, 올해 도정사업에서 드러낸 존재감…용인·마포서도 승전고 [...</a>
-                    </h2>
-                    <div class="card-footer">
-                        <span class="card-source">newspost.kr · 2026-04-06</span>
-                        <a class="card-link" href="https://www.newspost.kr/news/articleView.html?idxno=222168" target="_blank">
-                            기사 원문
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-            <article class="card">
-                <div class="card-inner">
-                    <div class="card-tags"><span class="tag tag-daewoo">대우건설</span><span class="tag tag-compete">입찰</span></div>
-                    <h2 class="card-title">
-                        <a href="https://www.arunews.com/news/articleView.html?idxno=61294" target="_blank">대우건설, 2026 우수협력회사 동반성장 간담회</a>
-                    </h2>
-                    <div class="card-footer">
-                        <span class="card-source">arunews.com · 2026-04-06</span>
-                        <a class="card-link" href="https://www.arunews.com/news/articleView.html?idxno=61294" target="_blank">
-                            기사 원문
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-        </div>
-        <div class="company-section visible" data-company="GS건설">
-            <div class="section-divider"><span>GS건설</span><span class="section-count">13건</span></div>
-
-            <article class="card">
-                <div class="card-inner">
-                    <div class="card-tags"><span class="tag tag-gs">GS건설</span><span class="tag tag-compete">수주·계약</span></div>
-                    <h2 class="card-title">
-                        <a href="https://economist.co.kr/article/view/ecn202604130043" target="_blank">상대원2구역, DL 해지 가결에도 시공사 공백…GS건설 선정될까</a>
-                    </h2>
-                    <div class="card-footer">
-                        <span class="card-source">economist.co.kr · 2026-04-13</span>
-                        <a class="card-link" href="https://economist.co.kr/article/view/ecn202604130043" target="_blank">
-                            기사 원문
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-            <article class="card">
-                <div class="card-inner">
-                    <div class="card-tags"><span class="tag tag-gs">GS건설</span><span class="tag tag-energy">에너지</span></div>
-                    <h2 class="card-title">
-                        <a href="https://www.pinpointnews.co.kr/news/articleView.html?idxno=444741" target="_blank">주택 둔화에도 기회… GS건설, 원전 기대감 부각</a>
-                    </h2>
-                    <div class="card-footer">
-                        <span class="card-source">pinpointnews.co.kr · 2026-04-12</span>
-                        <a class="card-link" href="https://www.pinpointnews.co.kr/news/articleView.html?idxno=444741" target="_blank">
-                            기사 원문
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-            <article class="card">
-                <div class="card-inner">
-                    <div class="card-tags"><span class="tag tag-gs">GS건설</span><span class="tag tag-energy">해외</span></div>
-                    <h2 class="card-title">
-                        <a href="http://www.wsobi.com/news/articleView.html?idxno=309828" target="_blank">GS건설, 미국 스타트업 아모지(AMOGY)와 합작투자 계약 체결</a>
-                    </h2>
-                    <div class="card-footer">
-                        <span class="card-source">wsobi.com · 2026-04-10</span>
-                        <a class="card-link" href="http://www.wsobi.com/news/articleView.html?idxno=309828" target="_blank">
-                            기사 원문
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-            <article class="card">
-                <div class="card-inner">
-                    <div class="card-tags"><span class="tag tag-gs">GS건설</span><span class="tag tag-energy">에너지</span></div>
-                    <h2 class="card-title">
-                        <a href="https://www.financialpost.co.kr/news/articleView.html?idxno=255002" target="_blank">LS증권 &quot;GS건설, 주택주 넘어 '원전주' 재평가&quot;</a>
-                    </h2>
-                    <div class="card-footer">
-                        <span class="card-source">financialpost.co.kr · 2026-04-10</span>
-                        <a class="card-link" href="https://www.financialpost.co.kr/news/articleView.html?idxno=255002" target="_blank">
-                            기사 원문
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-            <article class="card">
-                <div class="card-inner">
-                    <div class="card-tags"><span class="tag tag-gs">GS건설</span><span class="tag tag-tech">기술</span></div>
-                    <h2 class="card-title">
-                        <a href="http://www.fnnews.com/news/202604091519551293" target="_blank">GS건설, '모듈러 엘리베이터' 기술개발...현대엘리와 맞손</a>
-                    </h2>
-                    <div class="card-footer">
-                        <span class="card-source">파이낸셜뉴스 · 2026-04-09</span>
-                        <a class="card-link" href="http://www.fnnews.com/news/202604091519551293" target="_blank">
-                            기사 원문
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-            <article class="card">
-                <div class="card-inner">
-                    <div class="card-tags"><span class="tag tag-gs">GS건설</span><span class="tag tag-compete">수주·계약</span></div>
-                    <h2 class="card-title">
-                        <a href="https://realty.chosun.com/site/data/html_dir/2026/04/08/2026040803487.html" target="_blank">GS건설, 허창수→허윤홍 본격 세대 교체…호실적에 성과급 활짝</a>
-                    </h2>
-                    <div class="card-footer">
-                        <span class="card-source">realty.chosun.com · 2026-04-09</span>
-                        <a class="card-link" href="https://realty.chosun.com/site/data/html_dir/2026/04/08/2026040803487.html" target="_blank">
-                            기사 원문
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-            <article class="card">
-                <div class="card-inner">
-                    <div class="card-tags"><span class="tag tag-gs">GS건설</span><span class="tag tag-compete">수주·계약</span></div>
-                    <h2 class="card-title">
-                        <a href="https://www.digitaltoday.co.kr/news/articleView.html?idxno=655505" target="_blank">GS건설 최대주주 허창수, GS건설 주식등의 수 15만1429주 감소…총 지분...</a>
-                    </h2>
-                    <div class="card-footer">
-                        <span class="card-source">digitaltoday.co.kr · 2026-04-09</span>
-                        <a class="card-link" href="https://www.digitaltoday.co.kr/news/articleView.html?idxno=655505" target="_blank">
-                            기사 원문
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-            <article class="card">
-                <div class="card-inner">
-                    <div class="card-tags"><span class="tag tag-gs">GS건설</span><span class="tag tag-org">조직·인사</span></div>
-                    <h2 class="card-title">
-                        <a href="http://www.edaily.co.kr/news/newspath.asp?newsid=04021286645414152" target="_blank">하나금융, GS건설 손 잡고 AI 데이터센터 등 첨단 인프라에 자금공급</a>
-                    </h2>
-                    <div class="card-footer">
-                        <span class="card-source">이데일리 · 2026-04-08</span>
-                        <a class="card-link" href="http://www.edaily.co.kr/news/newspath.asp?newsid=04021286645414152" target="_blank">
-                            기사 원문
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-            <article class="card">
-                <div class="card-inner">
-                    <div class="card-tags"><span class="tag tag-gs">GS건설</span><span class="tag tag-compete">입찰</span></div>
-                    <h2 class="card-title">
-                        <a href="https://www.m-i.kr/news/articleView.html?idxno=1362812" target="_blank">성수1지구 '리베니크 자이' 베일 벗는다…GS건설, 홍보관 개관</a>
-                    </h2>
-                    <div class="card-footer">
-                        <span class="card-source">m-i.kr · 2026-04-08</span>
-                        <a class="card-link" href="https://www.m-i.kr/news/articleView.html?idxno=1362812" target="_blank">
-                            기사 원문
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-            <article class="card">
-                <div class="card-inner">
-                    <div class="card-tags"><span class="tag tag-gs">GS건설</span><span class="tag tag-compete">정비사업</span></div>
-                    <h2 class="card-title">
-                        <a href="http://www.wowtv.co.kr/NewsCenter/News/Read?articleId=A202604070430&amp;t=NN" target="_blank">GS건설, 시멘트사와 초고층 건물 시공 안정성 향상 업무협약</a>
-                    </h2>
-                    <div class="card-footer">
-                        <span class="card-source">wowtv.co.kr · 2026-04-07</span>
-                        <a class="card-link" href="http://www.wowtv.co.kr/NewsCenter/News/Read?articleId=A202604070430&amp;t=NN" target="_blank">
-                            기사 원문
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-            <article class="card">
-                <div class="card-inner">
-                    <div class="card-tags"><span class="tag tag-gs">GS건설</span><span class="tag tag-compete">입찰</span></div>
-                    <h2 class="card-title">
-                        <a href="https://www.businesspost.co.kr/BP?command=article_view&amp;num=435140" target="_blank">LH·GS건설 서울 성북1구역 공동사업시행 협약, '자이 비:원' 2027년 사업...</a>
-                    </h2>
-                    <div class="card-footer">
-                        <span class="card-source">businesspost.co.kr · 2026-04-07</span>
-                        <a class="card-link" href="https://www.businesspost.co.kr/BP?command=article_view&amp;num=435140" target="_blank">
-                            기사 원문
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-            <article class="card">
-                <div class="card-inner">
-                    <div class="card-tags"><span class="tag tag-gs">GS건설</span><span class="tag tag-compete">정비사업</span></div>
-                    <h2 class="card-title">
-                        <a href="https://www.arunews.com/news/articleView.html?idxno=61307" target="_blank">GS건설, 봉천14구역 재개발 수주 공시</a>
-                    </h2>
-                    <div class="card-footer">
-                        <span class="card-source">arunews.com · 2026-04-06</span>
-                        <a class="card-link" href="https://www.arunews.com/news/articleView.html?idxno=61307" target="_blank">
-                            기사 원문
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-            <article class="card">
-                <div class="card-inner">
-                    <div class="card-tags"><span class="tag tag-gs">GS건설</span><span class="tag tag-compete">수주·계약</span></div>
-                    <h2 class="card-title">
-                        <a href="https://www.sentv.co.kr/article/view/sentv202604060150" target="_blank">GS건설, ‘이니마 찬스’ 올해 끝…모듈러 3사 시험대</a>
-                    </h2>
-                    <div class="card-footer">
-                        <span class="card-source">sentv.co.kr · 2026-04-06</span>
-                        <a class="card-link" href="https://www.sentv.co.kr/article/view/sentv202604060150" target="_blank">
-                            기사 원문
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-        </div>
-        <div class="company-section visible" data-company="DL이앤씨">
-            <div class="section-divider"><span>DL이앤씨</span><span class="section-count">9건</span></div>
-
-            <article class="card">
-                <div class="card-inner">
-                    <div class="card-tags"><span class="tag tag-dl">DL이앤씨</span><span class="tag tag-compete">수주·계약</span></div>
-                    <h2 class="card-title">
-                        <a href="https://www.newspim.com/news/view/20260413000606" target="_blank">DL이앤씨, 압구정5구역 '도촬 논란' 공식 사과…&quot;입찰 무효 사유 아냐&quot;</a>
-                    </h2>
-                    <div class="card-footer">
-                        <span class="card-source">뉴스핌 · 2026-04-13</span>
-                        <a class="card-link" href="https://www.newspim.com/news/view/20260413000606" target="_blank">
-                            기사 원문
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-            <article class="card">
-                <div class="card-inner">
-                    <div class="card-tags"><span class="tag tag-dl">DL이앤씨</span><span class="tag tag-compete">입찰</span></div>
-                    <h2 class="card-title">
-                        <a href="https://www.dnews.co.kr/uhtml/view.jsp?idxno=202604101614025310813" target="_blank">[도시정비시장 풍향계] 목동6단지 재건축 DL이앤씨 단독 응찰</a>
-                    </h2>
-                    <div class="card-footer">
-                        <span class="card-source">대한경제 · 2026-04-10</span>
-                        <a class="card-link" href="https://www.dnews.co.kr/uhtml/view.jsp?idxno=202604101614025310813" target="_blank">
-                            기사 원문
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-            <article class="card">
-                <div class="card-inner">
-                    <div class="card-tags"><span class="tag tag-dl">DL이앤씨</span><span class="tag tag-finance">실적</span></div>
-                    <h2 class="card-title">
-                        <a href="https://www.newsquest.co.kr/news/articleView.html?idxno=264559" target="_blank">DL이앤씨 순이익 '착시'…대손상각비와 자본잠식 종속기업으로 세전이익...</a>
-                    </h2>
-                    <div class="card-footer">
-                        <span class="card-source">newsquest.co.kr · 2026-04-10</span>
-                        <a class="card-link" href="https://www.newsquest.co.kr/news/articleView.html?idxno=264559" target="_blank">
-                            기사 원문
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-            <article class="card">
-                <div class="card-inner">
-                    <div class="card-tags"><span class="tag tag-dl">DL이앤씨</span><span class="tag tag-compete">수주·계약</span></div>
-                    <h2 class="card-title">
-                        <a href="https://www.insightkorea.co.kr/news/articleView.html?idxno=244392" target="_blank">'현장형' 박상신 DL이앤씨 대표, 압구정·성수에 '아크로타운' 짓는다</a>
-                    </h2>
-                    <div class="card-footer">
-                        <span class="card-source">insightkorea.co.kr · 2026-04-09</span>
-                        <a class="card-link" href="https://www.insightkorea.co.kr/news/articleView.html?idxno=244392" target="_blank">
-                            기사 원문
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-            <article class="card">
-                <div class="card-inner">
-                    <div class="card-tags"><span class="tag tag-dl">DL이앤씨</span><span class="tag tag-compete">입찰</span></div>
-                    <h2 class="card-title">
-                        <a href="https://www.socialvalue.kr/news/view/1065594305799433" target="_blank">재개발은 대표들의 '무덤'?...상대원2구역 논란에 DL이앤씨 박상신호 '흔...</a>
-                    </h2>
-                    <div class="card-footer">
-                        <span class="card-source">socialvalue.kr · 2026-04-09</span>
-                        <a class="card-link" href="https://www.socialvalue.kr/news/view/1065594305799433" target="_blank">
-                            기사 원문
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-            <article class="card">
-                <div class="card-inner">
-                    <div class="card-tags"><span class="tag tag-dl">DL이앤씨</span><span class="tag tag-compete">수주·계약</span></div>
-                    <h2 class="card-title">
-                        <a href="https://www.newsquest.co.kr/news/articleView.html?idxno=264452" target="_blank">&quot;DL이앤씨, 무난한 1분기 실적 달성…SMR도 사업 중심축으로 확대&quot;</a>
-                    </h2>
-                    <div class="card-footer">
-                        <span class="card-source">newsquest.co.kr · 2026-04-08</span>
-                        <a class="card-link" href="https://www.newsquest.co.kr/news/articleView.html?idxno=264452" target="_blank">
-                            기사 원문
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-            <article class="card">
-                <div class="card-inner">
-                    <div class="card-tags"><span class="tag tag-dl">DL이앤씨</span><span class="tag tag-compete">착공·준공</span></div>
-                    <h2 class="card-title">
-                        <a href="http://www.beyondpost.co.kr/view.php?ud=202604081551481029205868f676_30" target="_blank">DL이앤씨, 선호도·청약·품질 '트리플 크라운'으로 하이엔드 평정</a>
-                    </h2>
-                    <div class="card-footer">
-                        <span class="card-source">beyondpost.co.kr · 2026-04-08</span>
-                        <a class="card-link" href="http://www.beyondpost.co.kr/view.php?ud=202604081551481029205868f676_30" target="_blank">
-                            기사 원문
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-            <article class="card">
-                <div class="card-inner">
-                    <div class="card-tags"><span class="tag tag-dl">DL이앤씨</span><span class="tag tag-energy">에너지</span></div>
-                    <h2 class="card-title">
-                        <a href="http://www.biztribune.co.kr/news/articleView.html?idxno=352072" target="_blank">DL이앤씨, 이제 시작인 SMR 모멘텀 - 키움증권</a>
-                    </h2>
-                    <div class="card-footer">
-                        <span class="card-source">biztribune.co.kr · 2026-04-08</span>
-                        <a class="card-link" href="http://www.biztribune.co.kr/news/articleView.html?idxno=352072" target="_blank">
-                            기사 원문
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-            <article class="card">
-                <div class="card-inner">
-                    <div class="card-tags"><span class="tag tag-dl">DL이앤씨</span><span class="tag tag-compete">수주·계약</span></div>
-                    <h2 class="card-title">
-                        <a href="https://www.dnews.co.kr/uhtml/view.jsp?idxno=202604031607332700908" target="_blank">DL이앤씨, 올해 LH 첫 민참 공공주택 수주 ‘쾌거’</a>
-                    </h2>
-                    <div class="card-footer">
-                        <span class="card-source">대한경제 · 2026-04-06</span>
-                        <a class="card-link" href="https://www.dnews.co.kr/uhtml/view.jsp?idxno=202604031607332700908" target="_blank">
-                            기사 원문
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </article>
-        </div>
-
-    </main>
-
-    <footer class="footer">
-        <p>COMPETITORS WATCH · 네이버 뉴스 API 기반 경쟁사 사업동향 자동 수집 · 2026.04.13</p>
-    </footer>
-
-    <script>
-    function filterByCompany(company) {
-        document.querySelectorAll('.tab').forEach(t => {
-            t.classList.toggle('active', t.dataset.company === company);
-        });
-        document.querySelectorAll('.stat-chip').forEach(c => {
-            c.classList.toggle('active', c.dataset.company === company);
-        });
-        document.querySelectorAll('.company-section').forEach(s => {
-            if (company === 'all') {
-                s.classList.add('visible');
-            } else {
-                s.classList.toggle('visible', s.dataset.company === company);
-            }
-        });
-    }
-    // 최초 진입 시 URL hash로 회사 자동 필터 (PPTX 보고서 링크에서 진입 가능)
-    // 예: https://hdec-daily-news.github.io/hdec-competitors/#대우건설
-    function applyHashFilter() {
-        let h = decodeURIComponent((location.hash || '').replace(/^#/, '')).trim();
-        // 삼성E&A는 data-company가 '삼성EA' 이므로 매핑
-        if (h === '삼성E&A' || h === '삼성EA') h = '삼성EA';
-        const valid = ['all','삼성물산','삼성EA','대우건설','GS건설','DL이앤씨'];
-        filterByCompany(valid.includes(h) ? h : 'all');
-    }
-    applyHashFilter();
-    window.addEventListener('hashchange', applyHashFilter);
-    </script>
+</main>
 </body>
 </html>
