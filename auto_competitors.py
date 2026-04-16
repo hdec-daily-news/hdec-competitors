@@ -96,11 +96,10 @@ def collect_news():
         "X-Naver-Client-Id": NAVER_CLIENT_ID,
         "X-Naver-Client-Secret": NAVER_CLIENT_SECRET,
     }
-    # [주간 보고서] 시간 단위 슬라이딩 윈도우(daily-news 방식) 사용 안 함.
-    # 자정 기준으로 윈도우를 잡아 같은 날 여러 번 돌려도 결과가 미끄러지지 않게 함.
-    # 보고 사이클이 매주 ~1회임을 감안해 7일이 아닌 8일로 약간 여유를 둠 → 한 주차 양 끝이 잘리지 않음.
+    # [주간 요약] 오늘 기준 7일 롤링 윈도우.
+    # 자정 기준 cutoff — 같은 날 여러 번 돌려도 결과가 미끄러지지 않음.
     today_midnight = datetime.now(KST).replace(hour=0, minute=0, second=0, microsecond=0)
-    cutoff = today_midnight - timedelta(days=1)
+    cutoff = today_midnight - timedelta(days=7)
 
     all_articles = {}
 
@@ -659,8 +658,9 @@ def generate_html(company_articles):
     """대형사 동향 HTML — oil-naphtha 라이트 테마 공유"""
     now = datetime.now(KST)
     today = now.strftime("%Y년 %m월 %d일 %H:%M")
-    yesterday = (now - timedelta(days=1)).strftime("%m.%d")
-    period = f"{yesterday} ~ {now.strftime('%m.%d')}"
+    # 월 내 주차 표기 (단순 방식: (일-1)//7 + 1)
+    week_no = (now.day - 1) // 7 + 1
+    weekly_label = f"{now.month}월 {week_no}주차"
 
     COMPANY_ICONS = {
         "삼성물산": "🏢",
@@ -757,7 +757,7 @@ def generate_html(company_articles):
     <div class="site-meta">
       <span>업데이트 {today}</span>
       <span class="sep">·</span>
-      <span>수집기간 {period}</span>
+      <span>{weekly_label} (최근 7일)</span>
     </div>
   </header>
 
