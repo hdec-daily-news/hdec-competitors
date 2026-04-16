@@ -814,7 +814,7 @@ def main():
         config = COMPANIES[company]
         articles = remove_duplicates(articles)
         articles = filter_business_news(articles, config)
-        top = select_top_articles(articles)  # 갯수 제한 없음 + 유사기사 제거
+        top = select_top_articles(articles)[:10]  # 회사당 최대 10건
         company_results[company] = top
         all_for_csv.extend(top)  # 중복 제거된 최종 결과만 CSV에 저장
         print(f"  [{company}] {len(articles)}건 필터 통과 → {len(top)}건 최종 선정")
