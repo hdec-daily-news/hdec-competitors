@@ -758,6 +758,8 @@ def generate_html(company_articles):
       <span>업데이트 {today}</span>
       <span class="sep">·</span>
       <span>{weekly_label} (최근 7일)</span>
+      <span class="sep">·</span>
+      <span class="auto-badge">🔄 매일 08시 / 12시 자동업데이트</span>
     </div>
   </header>
 
