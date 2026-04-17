@@ -759,7 +759,7 @@ def generate_html(company_articles):
       <span class="sep">·</span>
       <span>{weekly_label} (최근 7일)</span>
       <span class="sep">·</span>
-      <span class="auto-badge">🔄 매일 08시 / 12시 자동업데이트</span>
+      <span class="auto-badge">🔄 매일 07시 / 12시 2회 자동 업데이트</span>
     </div>
   </header>
 
