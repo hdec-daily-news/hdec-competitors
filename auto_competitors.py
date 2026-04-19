@@ -658,8 +658,11 @@ def generate_html(company_articles):
     """대형사 동향 HTML — oil-naphtha 라이트 테마 공유"""
     now = datetime.now(KST)
     today = now.strftime("%Y년 %m월 %d일 %H:%M")
-    # 월 내 주차 표기 (단순 방식: (일-1)//7 + 1)
-    week_no = (now.day - 1) // 7 + 1
+    # 월요일 기준 주차 (한국식: 1일이 포함된 주를 1주차)
+    month_first = now.replace(day=1)
+    first_week_monday = month_first - timedelta(days=month_first.weekday())
+    this_monday = now - timedelta(days=now.weekday())
+    week_no = (this_monday.date() - first_week_monday.date()).days // 7 + 1
     weekly_label = f"{now.month}월 {week_no}주차"
 
     COMPANY_ICONS = {
