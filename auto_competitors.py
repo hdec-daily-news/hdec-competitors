@@ -34,6 +34,7 @@ COMPANIES = {
             "래미안",  # 브랜드명
         ],
         "identifier": ["삼성물산", "래미안"],
+        "exclude": ["패션부문", "패션 부문", "에잇세컨즈", "빈폴", "구호", "갤럭시 (브랜드)"],
         "color": "#1428a0",
     },
     "삼성E&A": {
@@ -476,6 +477,11 @@ def filter_business_news(articles, company_config):
 
         # ① 하드 제외
         if any(kw in text for kw in HARD_EXCLUDE):
+            continue
+
+        # ①-2 회사별 추가 제외 (예: 삼성물산 패션부문 등 비건설 사업부)
+        company_exclude = company_config.get("exclude", [])
+        if any(kw in text for kw in company_exclude):
             continue
 
         # ② 회사가 기사의 주체인지 판단
